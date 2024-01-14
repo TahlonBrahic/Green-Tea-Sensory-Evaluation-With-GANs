@@ -1,2 +1,2 @@
 # DTSC-691-Capstone-Project
-This is a private repository that stores the project files for my program capstone project.
+My project involves developing a machine-learning model to explore and predict how the chemical composition of Chinese green tea influences its overall likeability. I plan to gather and analyze data on various aspects such as tea varieties, harvest times, and processing methods, focusing particularly on key compounds like amino acids, catechins, and caffeine, along with sensory evaluations. The primary aim is to establish a correlation between these components, particularly amino acids, catechins, and caffeine, and the tea's sensory appeal, including its aroma, taste, and other desirable qualities.
