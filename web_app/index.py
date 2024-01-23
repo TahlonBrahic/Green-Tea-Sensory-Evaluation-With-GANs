@@ -1,6 +1,7 @@
-from flask import Flask
+from flask import Flask, render_template
 
-app = Flask(__Name__)
+app = Flask(__name__, template_folder="/templates")
 
-@app.round('/')
+@app.route('/')
+def index():
     return render_template('index.html')
