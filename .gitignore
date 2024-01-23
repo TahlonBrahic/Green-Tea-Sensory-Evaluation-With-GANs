@@ -1,2 +1,7 @@
-venv/
+<<<<<<< HEAD
+.venv/
 .vscode/
+=======
+.venv/
+.vscode/
+>>>>>>> 101b061e1c136c7ef7741ea5c6b49001a984b3fa
