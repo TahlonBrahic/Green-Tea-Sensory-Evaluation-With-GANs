@@ -11,4 +11,4 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    print('s', TEMPLATE_DIR, STATIC_DIR)
+    app.run()
