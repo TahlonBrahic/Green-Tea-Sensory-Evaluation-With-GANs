@@ -12,5 +12,13 @@ print(TEMPLATE_DIR)
 def index():
     return render_template('index.html')
 
+@app.route('/projects')
+def projects():
+    pass
+
+@app.route('/tea-catechins')
+def tea_catechins():
+    pass
+
 if __name__ == '__main__':
     app.run()
