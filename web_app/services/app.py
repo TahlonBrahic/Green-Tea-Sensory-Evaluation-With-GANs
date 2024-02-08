@@ -1,12 +1,11 @@
 from flask import Flask, render_template
 import os
 
-TEMPLATE_DIR = os.path.abspath('web_app/templates')
-STATIC_DIR = os.path.abspath('web_app/static/styles')
+APP_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
+TEMPLATE_DIR = os.path.join(app_root_path, '../templates')
+STATIC_DIR = os.path.join(app_root_path, '../static')
 
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
-
-print(TEMPLATE_DIR)
 
 @app.route('/')
 def index():
