@@ -18,6 +18,7 @@ filelock==3.9.0
 Flask==3.0.1
 fonttools==4.47.2
 fsspec==2023.4.0
+gunicorn==21.2.0
 idna==3.4
 ipykernel==6.29.0
 ipython==8.20.0
