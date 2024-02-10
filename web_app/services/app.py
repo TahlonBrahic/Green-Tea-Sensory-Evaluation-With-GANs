@@ -8,7 +8,8 @@ STATIC_DIR = os.path.join(APP_ROOT_PATH, '../static')
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 
 @app.route('/')
-def index():
+@app.route('/home')
+def home():
     return render_template('index.html')
 
 @app.route('/projects')
