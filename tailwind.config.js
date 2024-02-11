@@ -12,7 +12,7 @@ module.exports = {
       'purple': '#a78bfa',
       'gray-dark': '#334155',
       'gray': '#475569',
-      'gray-light': '##64748b',
+      'gray-light': '#64748b',
       'white': '#e2e8f0'
     },
     fontFamily: {

@@ -444,6 +444,10 @@ video {
   display: none;
 }
 
+html {
+  font-family: "Fira Code", monospace, system-ui, sans-serif;
+}
+
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -576,12 +580,36 @@ video {
   visibility: collapse;
 }
 
+.static {
+  position: static;
+}
+
 .block {
   display: block;
 }
 
+.flex {
+  display: flex;
+}
+
+.w-\[92\%\] {
+  width: 92%;
+}
+
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-\[5vw\] {
+  gap: 5vw;
 }
 
 .text-white {
@@ -595,15 +623,12 @@ video {
 }
 
 #Introduction {
-  background-color: #ffffff;
 }
 
 #About Me {
-  background-color: #333333;
 }
 
 #Projects {
-  background-color: #ffffff;
 }
 
 /* npx tailwindcss -i /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/index.css -o /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/output.css --watch */
