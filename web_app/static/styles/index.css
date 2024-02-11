@@ -1,6 +1,6 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
     html {
@@ -8,10 +8,8 @@
     }
 }
   
-
 #typewriter {
     white-space: pre-wrap; /* Preserves whitespace and wraps text */
 }
-
 
 /* npx tailwindcss -i /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/index.css -o /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/output.css --watch */
