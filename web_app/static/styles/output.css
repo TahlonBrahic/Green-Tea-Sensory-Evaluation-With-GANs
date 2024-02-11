@@ -612,11 +612,6 @@ html {
   gap: 5vw;
 }
 
-.text-white {
-  --tw-text-opacity: 1;
-  color: rgb(226 232 240 / var(--tw-text-opacity));
-}
-
 #typewriter {
   white-space: pre-wrap;
   /* Preserves whitespace and wraps text */

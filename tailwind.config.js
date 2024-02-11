@@ -9,11 +9,6 @@ module.exports = {
       xl: '1440px',
     },
     colors: {
-      'purple': '#a78bfa',
-      'gray-dark': '#334155',
-      'gray': '#475569',
-      'gray-light': '#64748b',
-      'white': '#e2e8f0'
     },
     fontFamily: {
       sans: ['Graphik', 'sans-serif'],
