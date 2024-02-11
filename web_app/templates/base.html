@@ -7,13 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Tailwind CSS, Fira Code Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
     <link href="{{ url_for('static', filename='styles/output.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 
     <title>{% block title %} {% endblock %}</title>
   </head>
   <body class=""> 
-    <nav class="navbar navbar-expand-md flex justify-between items-center w-[92%] bg-red">
+    <nav class="navbar navbar-expand-md flex justify-between items-center w-[92%]>
         <a class="navbar-brand" href="{{ url_for('home')}}">&lt; /C&gt; Tahlon Brahic</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
