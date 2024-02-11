@@ -18,7 +18,7 @@ Let's unlock the power of data together!`;
         let index = 0;
         const typewriterElement = document.getElementById('typewriter');
 
-        function typeWriterEffect(timeout = 300) {
+        function typeWriterEffect(timeout = 30) {
             if (index < text.length) {
                 // Replace 'innerHTML' with 'innerText' or 'textContent' for better practice
                 typewriterElement.innerText += text.charAt(index);

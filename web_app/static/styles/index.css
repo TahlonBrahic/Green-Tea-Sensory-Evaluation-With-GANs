@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#typewriter {
+    white-space: pre-wrap; /* Preserves whitespace and wraps text */
+}
