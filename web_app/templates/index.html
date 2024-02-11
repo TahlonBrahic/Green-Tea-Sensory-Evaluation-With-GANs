@@ -2,27 +2,39 @@
 
 {% block content %}
 <section id="Introduction">
-    <h1>{% block title %} Hey I'm Tahlon, Data Scientist + Developer {% endblock %}</h1>
-    <p class="relative w-[max-content]">
-        &lt;p&gt; <br>
-        As a data scientist and developer, <br>
-        I bring a unique blend of analytical prowess and coding wizardry to every project I undertake. <br>
-        With a passion for unraveling complex datasets and crafting innovative solutions, <br>
-        I thrive in the world of data-driven decision-making. <br>
-        Whether it's building robust machine learning models or architecting scalable software applications, <br>
-        I am dedicated to pushing the boundaries of what's possible with data. <br>
-        Explore my portfolio and discover how I can help transform your data challenges into actionable insights and impactful solutions. <br>
-        Let's unlock the power of data together! <br>
-        &lt;/p&gt; <br>
-    </p>
+    <h1>Hey I'm Tahlon, Data Scientist + Developer</h1>
+    <p class="typewriter-text" id="typewriter"></p>
+    <script>
+        // Define the text as a template literal for multiline support
+        const text = `As a data scientist and developer,
+I bring a unique blend of analytical prowess and coding wizardry to every project I undertake.
+With a passion for unraveling complex datasets and crafting innovative solutions,
+I thrive in the world of data-driven decision-making.
+Whether it's building robust machine learning models or architecting scalable software applications,
+I am dedicated to pushing the boundaries of what's possible with data.
+Explore my portfolio and discover how I can help transform your data challenges into actionable insights and impactful solutions.
+Let's unlock the power of data together!`;
+
+        let index = 0;
+        const typewriterElement = document.getElementById('typewriter');
+
+        function typeWriterEffect(timeout = 300) {
+            if (index < text.length) {
+                // Replace 'innerHTML' with 'innerText' or 'textContent' for better practice
+                typewriterElement.innerText += text.charAt(index);
+                index++;
+                setTimeout(() => typeWriterEffect(timeout), timeout);
+            }
+        }
+
+        // Initiate the typewriter effect
+        typeWriterEffect();
+    </script>
 </section>
 <section id="About Me">
-
+    <!-- Content for About Me -->
 </section>
 <section id="Projects">
-    
-</section>
-<section id="Projects">
-    
+    <!-- Content for Projects -->
 </section>
 {% endblock %}
