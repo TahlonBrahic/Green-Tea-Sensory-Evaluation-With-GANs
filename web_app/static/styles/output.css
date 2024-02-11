@@ -617,13 +617,4 @@ html {
   /* Preserves whitespace and wraps text */
 }
 
-#Introduction {
-}
-
-#About Me {
-}
-
-#Projects {
-}
-
 /* npx tailwindcss -i /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/index.css -o /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/output.css --watch */
