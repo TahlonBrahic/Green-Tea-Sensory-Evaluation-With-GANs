@@ -16,7 +16,7 @@
   /* 2 */
   border-style: solid;
   /* 2 */
-  border-color: #e5e7eb;
+  border-color: currentColor;
   /* 2 */
 }
 
@@ -46,7 +46,7 @@ html,
   -o-tab-size: 4;
      tab-size: 4;
   /* 3 */
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: Graphik, sans-serif;
   /* 4 */
   font-feature-settings: normal;
   /* 5 */
@@ -548,9 +548,9 @@ video {
   width: 100%;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 480px) {
   .container {
-    max-width: 640px;
+    max-width: 480px;
   }
 }
 
@@ -560,21 +560,15 @@ video {
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 976px) {
   .container {
-    max-width: 1024px;
+    max-width: 976px;
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1440px) {
   .container {
-    max-width: 1280px;
-  }
-}
-
-@media (min-width: 1536px) {
-  .container {
-    max-width: 1536px;
+    max-width: 1440px;
   }
 }
 
@@ -588,6 +582,11 @@ video {
 
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(226 232 240 / var(--tw-text-opacity));
 }
 
 #typewriter {
@@ -606,3 +605,5 @@ video {
 #Projects {
   background-color: #ffffff;
 }
+
+/* npx tailwindcss -i /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/index.css -o /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/output.css --watch */
