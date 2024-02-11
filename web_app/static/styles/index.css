@@ -5,3 +5,17 @@
 #typewriter {
     white-space: pre-wrap; /* Preserves whitespace and wraps text */
 }
+
+#Introduction {
+    background-color: #ffffff; 
+}
+
+#About Me {
+    background-color: #333333; 
+}
+
+#Projects {
+    background-color: #ffffff; 
+}
+
+/* npx tailwindcss -i /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/index.css -o /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/output.css --watch */

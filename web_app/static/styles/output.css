@@ -594,3 +594,15 @@ video {
   white-space: pre-wrap;
   /* Preserves whitespace and wraps text */
 }
+
+#Introduction {
+  background-color: #ffffff;
+}
+
+#About Me {
+  background-color: #333333;
+}
+
+#Projects {
+  background-color: #ffffff;
+}
