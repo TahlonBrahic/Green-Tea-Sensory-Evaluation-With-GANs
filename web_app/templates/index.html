@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="">
-<section id="Introduction">
-    <div>
-    <h1>Hey I'm Tahlon, Data Scientist + Developer</h1>
-    <p class="typewriter-text font-mono" id="typewriter"></p>
-    <script>
-        // Define the text as a template literal for multiline support
-        const text = `As a data scientist and developer,
+<div class="w-full">
+    <section id="Introduction" class="min-h-screen flex items-center justify-center bg-gray-700 text-gray-200 px-4">
+        <div class="max-w-4xl mx-auto text-left">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold">Hey, I'm Tahlon, Data Scientist + Developer</h1>
+            <p class="typewriter-text mt-4 text-base md:text-lg" id="typewriter"></p>
+            <script>
+                const text = `As a data scientist and developer,
 I bring a unique blend of analytical prowess and coding wizardry to every project I undertake.
 With a passion for unraveling complex datasets and crafting innovative solutions,
 I thrive in the world of data-driven decision-making.
@@ -17,29 +16,51 @@ I am dedicated to pushing the boundaries of what's possible with data.
 Explore my portfolio and discover how I can help transform your data challenges into actionable insights and impactful solutions.
 Let's unlock the power of data together!`;
 
-        let index = 0;
-        const typewriterElement = document.getElementById('typewriter');
+                let index = 0;
+                const typewriterElement = document.getElementById('typewriter');
+                const cursorSpan = document.createElement('span');
+                cursorSpan.classList.add('cursor');
+                typewriterElement.appendChild(cursorSpan);
 
-        function typeWriterEffect(timeout = 30) {
-            if (index < text.length) {
-                // Replace 'innerHTML' with 'innerText' or 'textContent' for better practice
-                typewriterElement.innerText += text.charAt(index);
-                index++;
-                setTimeout(() => typeWriterEffect(timeout), timeout);
-            }
-        }
+                function typeWriterEffect(timeout = 150) { // Slowed down the typing effect
+                    if (index < text.length) {
+                        cursorSpan.before(text.charAt(index));
+                        index++;
+                        setTimeout(() => typeWriterEffect(timeout), timeout);
+                    }
+                }
 
-        // Initiate the typewriter effect
-        typeWriterEffect();
-    </script>
-</section>
-</div>
-<section id="About Me">
-    <h1>About Me</h1>
-    <p>Filler filler filler filler filler filler filler filler filler filler filler</p>
-</section>
-<section id="Projects">
-    <h1>Projects</h1>
-</section>
+                // Initiate the typewriter effect
+                document.addEventListener('DOMContentLoaded', typeWriterEffect);
+            </script>
+            <style>
+                .cursor {
+                    display: inline-block;
+                    width: 2px;
+                    height: 1em;
+                    background-color: #fff;
+                    margin-left: 2px;
+                    animation: blink 1s infinite;
+                }
+                @keyframes blink {
+                    50% { opacity: 0; }
+                }
+            </style>
+        </div>
+    </section>
+
+    <section id="About-Me" class="min-h-screen flex items-center justify-center bg-gray-600 text-gray-200 px-4">
+        <div class="max-w-4xl mx-auto text-left">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold">About Me</h1>
+            <p class="mt-4 text-base md:text-lg">[Your about me content here]</p>
+        </div>
+    </section>
+
+    <section id="Projects" class="min-h-screen flex items-center justify-center bg-gray-700 text-gray-200 px-4">
+        <div class="max-w-4xl mx-auto text-left">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold">Projects</h1>
+            <!-- Project details -->
+        </div>
+    </section>
 </div>
 {% endblock %}
