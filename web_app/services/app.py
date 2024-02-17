@@ -16,6 +16,10 @@ def home():
 def projects():
     pass
 
+@app.route('/resume')
+def resume():
+    pass
+
 @app.route('/tea-catechins')
 def tea_catechins():
     pass
