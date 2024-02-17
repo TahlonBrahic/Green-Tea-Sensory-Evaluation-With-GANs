@@ -14,15 +14,15 @@ def home():
 
 @app.route('/projects')
 def projects():
-    pass
+    return render_template('projects.html')
 
 @app.route('/resume')
 def resume():
-    pass
+    return render_template('resume.html')
 
-@app.route('/tea-catechins')
+@app.route('/projects/tea-catechins')
 def tea_catechins():
-    pass
+    return render_template('tea_catechins.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
