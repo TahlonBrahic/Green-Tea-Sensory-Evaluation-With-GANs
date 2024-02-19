@@ -5,23 +5,27 @@
 
 <section id="Model Title" class="min-h-screen flex justify-center bg-gray-600 text-gray-200 px-4">
     <div class="max-w-4xl mx-auto text-left">
-        <h1 class="pt-16 md:pt-20 lg:pt-24 text-3xl md:text-4xl lg:text-5xl font-bold">How Catechins & Caffeine Effect Percieved Sensory Appeal In Green Tea</h1>
+        <!-- Heading -->
+        <h1 class="pt-16 md:pt-20 lg:pt-24 text-3xl md:text-4xl lg:text-5xl font-bold">How Catechins & Caffeine Affect Perceived Sensory Appeal In Green Tea</h1>
+        
+        <!-- Form Container -->
+        <div class="container mt-5">
+            <h2>Interact with Our Machine Learning Model</h2>
+            <form id="modelInputForm">
+                <div class="mb-3">
+                    <label for="inputFeature1" class="form-label">Feature 1</label>
+                    <input type="text" class="form-control" id="inputFeature1" name="feature1" required>
+                </div>
+                <div class="mb-3">
+                    <label for="inputFeature2" class="form-label">Feature 2</label>
+                    <input type="number" class="form-control" id="inputFeature2" name="feature2" required>
+                </div>
+                <!-- Add more inputs as per your model's requirements -->
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <div id="predictionResult" class="mt-3"></div>
+        </div>
     </div>
 </section>
-<div class="container mt-5">
-    <h2>Interact with Our Machine Learning Model</h2>
-    <form id="modelInputForm">
-        <div class="mb-3">
-            <label for="inputFeature1" class="form-label">Feature 1</label>
-            <input type="text" class="form-control" id="inputFeature1" name="feature1" required>
-        </div>
-        <div class="mb-3">
-            <label for="inputFeature2" class="form-label">Feature 2</label>
-            <input type="number" class="form-control" id="inputFeature2" name="feature2" required>
-        </div>
-        <!-- Add more inputs as per your model's requirements -->
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    <div id="predictionResult" class="mt-3"></div>
-</div>
+
 {% endblock %}
