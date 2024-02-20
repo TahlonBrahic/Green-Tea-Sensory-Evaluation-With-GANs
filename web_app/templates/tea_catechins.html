@@ -3,6 +3,7 @@
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/onnxjs/dist/onnx.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <section id="Model Title" class="min-h-screen flex justify-center bg-gray-600 text-gray-200 px-4">
     <div class="max-w-4xl mx-auto text-left">
@@ -13,6 +14,7 @@
             <h2>
                 Interact with the Machine Learning Model
             </h2>
+            <div id="plot">{{ plot_div|safe }}</div>
             <form id="modelInputForm">
                 <div class="mb-3">
                     <label for="inputFeature1" class="form-label">Catechin</label>
@@ -58,12 +60,13 @@
 
 <script>
     document.getElementById('modelInputForm').addEventListener('submit', async function(e) {
-        e.preventDefault(); // Prevent the default form submission
+        e.preventDefault(); // prevent default form submission
         
         const formData = new FormData(e.target);
         const formProps = Object.fromEntries(formData);
         
-        try {
+        // Using axios above
+        try { 
             const response = await axios.post('/projects/tea-catechins', formProps, {
                 headers: {
                     'Content-Type': 'application/json',

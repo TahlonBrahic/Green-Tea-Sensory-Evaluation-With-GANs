@@ -1,4 +1,5 @@
 import onnxruntime as ort
+import plotly.graph_objs as go
 import os
 
 # Initialize models
@@ -17,3 +18,8 @@ def load_tea_catechin_models():
     if Model_RNN_session is None:
         Model_RNN_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RNN.onnx'))
 
+def create_tea_catechins_plot():
+    data = [go.Scatter(x=[1, 2, 3, 4], y=[10, 11, 12, 13], mode='lines', name='test')]
+    layout = go.Layout(title='Interactive Plot', xaxis=dict(title='X-axis'), yaxis=dict(title='Y-axis'))
+    fig = go.Figure(data=data, layout=layout)
+    return fig
