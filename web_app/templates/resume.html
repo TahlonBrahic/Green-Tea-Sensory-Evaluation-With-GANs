@@ -1,1 +1,6 @@
 {% extends 'base.html' %}
+
+{% block content %}
+    <!-- Render PDF here -->
+    <embed src="{{ url_for('static', filename='resume.pdf') }}" type="application/pdf" width="100%" height="600px">
+{% endblock %}

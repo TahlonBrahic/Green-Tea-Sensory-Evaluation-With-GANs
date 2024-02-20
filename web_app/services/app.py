@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import os
 import sys
+import plotly
 
 APP_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DIR = os.path.join(APP_ROOT_PATH, '../templates')
@@ -30,7 +31,7 @@ def projects():
 
 @app.route('/projects/tea-catechins', methods=['GET', 'POST']) 
 def tea_catechins():
-    plot = create_plot()
+    plot = create_tea_catechins_plot()
     plot_div = plotly.offline.plot(plot, output_type='div', include_plotlyjs=False)
     load_tea_catechin_models() # Lazy loading, models aren't loaded until you visit this exact page to avoid website lag
 
