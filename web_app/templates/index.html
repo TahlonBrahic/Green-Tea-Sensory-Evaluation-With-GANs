@@ -68,9 +68,9 @@ Let's unlock the power of data together!`;
     </section>
     
 
-    <section id="Projects" class="min-h-screen flex items-start justify-center bg-gray-700 text-gray-200 px-4">
-      <div class="max-w-4xl mx-auto text-left pt-12 md:pt-16 lg:pt-20">
-          <h1 class="pt-12 md:pt-16 lg:pt-20 text-3xl md:text-4xl lg:text-5xl font-bold">Projects</h1>
+    <section id="Projects" class="min-h-screen flex items-center justify-center bg-gray-700 text-gray-200 px-4">
+      <div class="max-w-4xl mx-auto text-center pt-12 md:pt-16 lg:pt-20 pb-12"> 
+          <h1 class="pt-40 md:pt-60 lg:pt-80 text-3xl md:text-4xl lg:text-5xl font-bold">Projects</h1>
           <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
               <ol class="carousel-indicators">
                   <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -85,7 +85,7 @@ Let's unlock the power of data together!`;
                       <img class="d-block w-100" src="{{ url_for('static', filename='laptop.jpg') }}" alt="Firmware hotfixes for Samsung Galaxy Book3 on Arch Linux">
                   </div>
                   <div class="carousel-item">
-                      <img class="d-block w-100" src=src="{{ url_for('static', filename='green_tea.jpg') }}" alt="How do catechins and caffeine affect perceived sensory evaluations in green tea?">
+                      <img class="d-block w-100" src="{{ url_for('static', filename='green_tea.jpg') }}" alt="How do catechins and caffeine affect perceived sensory evaluations in green tea?">
                   </div>
               </div>
               <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -99,6 +99,6 @@ Let's unlock the power of data together!`;
           </div>
       </div>
     </section>
-  
+   
 </div>
 {% endblock %}
