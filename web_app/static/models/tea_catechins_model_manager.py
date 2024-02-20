@@ -1,14 +1,19 @@
 import onnxruntime as ort
+import os
 
 # Initialize models
 Model_RF_session, Model_MLP_session, Model_RNN_session = None, None, None
 
 def load_tea_catechin_models():
     global Model_RF_session, Model_MLP_session, Model_RNN_session
+
+    # Needed for portability to elastic beanstalk
+    base_dir = os.path.join(os.path.dirname(__file__), '../../../source/')
+
     if Model_RF_session is None:
-        Model_RF_session = ort.InferenceSession('source/Model_RF.onnx')
+        Model_RF_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RF.onnx'))
     if Model_MLP_session is None:
-        Model_MLP_session = ort.InferenceSession('source/Model_MLP.onnx')
+        Model_MLP_session = ort.InferenceSession(os.path.join(base_dir, 'Model_MLP.onnx'))
     if Model_RNN_session is None:
-        Model_RNN_session = ort.InferenceSession('source/Model_RNN.onnx')
+        Model_RNN_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RNN.onnx'))
 
