@@ -820,6 +820,10 @@ html {
   padding-right: 0.5rem;
 }
 
+.pt-12 {
+  padding-top: 3rem;
+}
+
 .pt-16 {
   padding-top: 4rem;
 }
@@ -960,6 +964,10 @@ html {
 }
 
 @media (min-width: 768px) {
+  .md\:pt-16 {
+    padding-top: 4rem;
+  }
+
   .md\:pt-20 {
     padding-top: 5rem;
   }
@@ -979,6 +987,10 @@ html {
   .lg\:px-8 {
     padding-left: 2rem;
     padding-right: 2rem;
+  }
+
+  .lg\:pt-20 {
+    padding-top: 5rem;
   }
 
   .lg\:pt-24 {
