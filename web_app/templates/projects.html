@@ -2,13 +2,12 @@
 
 {% block content %}
 <section id="Project-Cards" class="min-h-screen flex items-center justify-center bg-gray-600 text-gray-200 px-4">
-    <a href="/projects/tea-catechins" class="card-link">
-        <div class="card" style="width: 18rem;">
-            <img src="{{ url_for('static', filename='green_tea.jpg') }}" class="card-img-top" alt="...">
-            <div class="card-body">
-                <p class="card-text">How do catechins and caffeine affect perceived sensory evaluations in green tea?</p>
-            </div>
+    <div class="card" style="width: 18rem;">
+        <img src="{{ url_for('static', filename='green_tea.jpg') }}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <p class="card-text">How do catechins and caffeine affect perceived sensory evaluations in green tea?</p>
+            <a href="/projects/tea-catechins" class="btn btn-primary">Machine Learning Model</a>
         </div>
-    </a>
+    </div>
 </section>
 {% endblock %}
