@@ -6,11 +6,13 @@
 
 <section id="Model Title" class="min-h-screen flex justify-center bg-gray-600 text-gray-200 px-4">
     <div class="max-w-4xl mx-auto text-left">
-        <h1 class="pt-16 md:pt-20 lg:pt-24 text-3xl md:text-4xl lg:text-5xl font-bold">How Catechins & Caffeine Affect Perceived Sensory Appeal In Green Tea</h1>
-        
-        <!-- Form Container -->
+        <h1 class="pt-16 md:pt-20 lg:pt-24 text-3xl md:text-4xl lg:text-5xl font-bold">
+            How Catechins & Caffeine Affect Perceived Sensory Appeal In Green Tea
+        </h1>
         <div class="container mt-5">
-            <h2>Interact with the Machine Learning Model</h2>
+            <h2>
+                Interact with the Machine Learning Model
+            </h2>
             <form id="modelInputForm">
                 <div class="mb-3">
                     <label for="inputFeature1" class="form-label">Catechin</label>
@@ -21,30 +23,30 @@
                 <input type="number" class="form-control" id="inputFeature2" name="feature2" required>
                 <div class="mb-3">
                     <label for="inputFeature1" class="form-label">Gallocatechin</label>
-                    <input type="number" class="form-control" id="inputFeature1" name="feature1" required>
+                    <input type="number" class="form-control" id="inputFeature3" name="feature1" required>
                 </div>
                 <div class="mb-3">
                     <label for="inputFeature2" class="form-label">Epigallocatechin</label>
-                    <input type="number" class="form-control" id="inputFeature2" name="feature2" required>
+                    <input type="number" class="form-control" id="inputFeature4" name="feature2" required>
                 </div>
                 <div class="mb-3">
                     <label for="inputFeature1" class="form-label">Catechin Gallate</label>
-                    <input type="number" class="form-control" id="inputFeature1" name="feature1" required>
+                    <input type="number" class="form-control" id="inputFeature5" name="feature1" required>
                 </div>
                 <div class="mb-3">
                     <label for="inputFeature2" class="form-label">Epicatechin Gallate</label>
-                <input type="number" class="form-control" id="inputFeature2" name="feature2" required>
+                <input type="number" class="form-control" id="inputFeature6" name="feature2" required>
                 <div class="mb-3">
                     <label for="inputFeature1" class="form-label">Gallocatechin Gallate</label>
-                    <input type="number" class="form-control" id="inputFeature1" name="feature1" required>
+                    <input type="number" class="form-control" id="inputFeature7" name="feature1" required>
                 </div>
                 <div class="mb-3">
                     <label for="inputFeature2" class="form-label">Epigallocatechin Gallate</label>
-                    <input type="number" class="form-control" id="inputFeature2" name="feature2" required>
+                    <input type="number" class="form-control" id="inputFeature8" name="feature2" required>
                 </div>
                 <div class="mb-3">
                     <label for="inputFeature2" class="form-label">Caffeine</label>
-                    <input type="number" class="form-control" id="inputFeature2" name="feature2" required>
+                    <input type="number" class="form-control" id="inputFeature9" name="feature2" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Predict</button>
@@ -53,5 +55,28 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.getElementById('modelInputForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Prevent the default form submission
+        
+        const formData = new FormData(e.target);
+        const formProps = Object.fromEntries(formData);
+        
+        try {
+            const response = await axios.post('/projects/tea-catechins', formProps, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            
+            // This returns the model prediction
+            document.getElementById('predictionResult').innerText = JSON.stringify(response.data, null, 2);
+        } catch (error) {
+            console.error('Error fetching predictions:', error);
+            document.getElementById('predictionResult').innerText = 'Error fetching predictions.';
+        }
+    });
+</script>
 
 {% endblock %}
