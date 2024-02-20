@@ -7,11 +7,11 @@ APP_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DIR = os.path.join(APP_ROOT_PATH, '../templates')
 STATIC_DIR = os.path.join(APP_ROOT_PATH, '../static')
 
-models_path = os.path.abspath(os.path.join(APP_ROOT_PATH, '../static/models'))
-if models_path not in sys.path:
-    sys.path.append(models_path)
+# models_path = os.path.abspath(os.path.join(APP_ROOT_PATH, '../static/models'))
+# if models_path not in sys.path:
+#     sys.path.append(models_path)
 
-from tea_catechins_model_manager import * # I know this isn't the best but the variables are so specific the namespace is clear
+# from tea_catechins_model_manager import * # I know this isn't the best but the variables are so specific the namespace is clear
 
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 
