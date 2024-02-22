@@ -33,7 +33,7 @@
                 {% for feature in features %}
                 <div class="mb-3">
                     <label for="inputFeature{{ loop.index }}" class="form-label">{{ feature }}</label>
-                    <input type="number" class="form-control" id="inputFeature{{ loop.index }}" name="{{ feature }}" required>
+                    <input type="number" class="form-control" id="inputFeature{{ loop.index }}" name="{{ feature }}" step="any" required>
                 </div>
                 {% endfor %}
 
