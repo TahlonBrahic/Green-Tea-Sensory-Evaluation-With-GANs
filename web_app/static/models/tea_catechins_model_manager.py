@@ -62,36 +62,43 @@ def create_tea_catechins_plot(test_X, y_pred, feature_1_name, feature_2_name, mo
     return fig
 
 def predict(model, features):
-    global Model_RF_session, Model_MLP_session, Model_RNN_session
-
-    # Convert features to ONNX format
-    features_formatted = np.array(features, dtype=np.float32).reshape(1, -1)  
+    global Model_RF_session, Model_MLP_session, Model_RNN_session, Chemical_Scaler_session, Sensory_Scaler_session
     
-    # Model Selection
-    if model == 'Random Forest':
-        model_session = Model_RF_session
-    elif model == 'Multilayer Perceptron':
-        model_session = Model_MLP_session
-    elif model == 'Recurrent Neural Network':
-        model_session = Model_RNN_session
-        features_formatted = features_formatted.reshape(1, -1, len(features)) # Added because RNN's expect an input of (batch_size, sequence_length, num_features)
-    else:
-        return "Error" # Default error handling
+    # Scale features
+    scaled_features = scale(features, Chemical_Scaler_session)
     
-    input_name = model_session.get_inputs()[0].name  
-
+    # Select the appropriate model session
+    model_session = {
+        'Random Forest': Model_RF_session,
+        'Multilayer Perceptron': Model_MLP_session,
+        'Recurrent Neural Network': Model_RNN_session
+    }.get(model, None)
+    
+    if model_session is None:
+        return "Error: Model not found"
+    
+    input_name = model_session.get_inputs()[0].name
+    output_name = model_session.get_outputs()[0].name
+    
+    # For RNN, ensure the input is reshaped appropriately
+    if model == 'Recurrent Neural Network':
+        scaled_features = scaled_features.reshape(1, -1, len(features))
+    
     # Perform prediction
-    result = model_session.run(None, {input_name: features_formatted}) # None retrieves all
+    prediction = model_session.run([output_name], {input_name: scaled_features.astype(np.float32)})[0]
     
-    return result[0]  
+    # Inverse scale the prediction if necessary
+    original_scale_prediction = inverse_scale(prediction, Sensory_Scaler_session)
+    
+    return original_scale_prediction 
 
-def scale(features, scaler_session):
+def scale(features, scaler_session=Chemical_Scaler_session):
     input_name = scaler_session.get_inputs()[0].name
     output_name = scaler_session.get_outputs()[0].name
     scaled_features = scaler_session.run([output_name], {input_name: features.astype(np.float32)})[0]
     return scaled_features
 
-def inverse_scale(predictions, scaler_session):
+def inverse_scale(predictions, scaler_session=Sensory_Scaler_session):
     input_name = scaler_session.get_inputs()[0].name
     output_name = scaler_session.get_outputs()[0].name
     original_scale_predictions = scaler_session.run([output_name], {input_name: predictions.astype(np.float32)})[0]
