@@ -5,7 +5,7 @@ import pandas as pd
 import os
 
 # Initialize models
-Model_RF_session, Model_MLP_session, Model_RNN_session = None, None, None
+Model_RF_session, Model_MLP_session, Model_RNN_session, Chemical_Scaler_session, Sensory_Scaler_session = None, None, None, None, None
 test_X = pd.read_csv('test_X.csv')
 
 def load_tea_catechin_models():
@@ -20,6 +20,9 @@ def load_tea_catechin_models():
         Model_MLP_session = ort.InferenceSession(os.path.join(base_dir, 'Model_MLP.onnx'))
     if Model_RNN_session is None:
         Model_RNN_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RNN.onnx'))
+
+    Chemical_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "chemical_scaler.onnx"))
+    Sensory_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "sensory_scaler.onnx"))
 
 def create_tea_catechins_plot(test_X, y_pred, feature_1_name, feature_2_name, model_name):
     # Extracting features for the plot using the provided feature names
@@ -81,3 +84,7 @@ def predict(model, features):
     result = model_session.run(None, {input_name: features_formatted}) # None retrieves all
     
     return result[0]  
+
+# Notes:
+# Scale features coming in
+# Inverse scale predictions coming out
