@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import os
 import sys
 import plotly
@@ -33,7 +33,7 @@ def projects():
 def tea_catechins():
 
     # Plot Related 
-    plot = create_tea_catechins_plot()s
+    plot = create_tea_catechins_plot()
     plot_div = plotly.offline.plot(plot, output_type='div', include_plotlyjs=False)
     load_tea_catechin_models() # Lazy loading, models aren't loaded until you visit this exact page to avoid website lag
 
@@ -42,8 +42,9 @@ def tea_catechins():
 
     if request.method == 'POST':
         data = request.json
+        print(data)
 
-        model_choice = data.get('model_choice') # Need to implement dropdown and relevant information
+        model_choice = data.get('model_choice') 
 
         # Extract features from the request
         features = [
@@ -51,6 +52,10 @@ def tea_catechins():
         ]
 
         prediction = predict(model_choice, features)
+
+        # Have to add or it errors out
+        if isinstance(prediction, np.ndarray):
+            prediction = prediction.tolist()
 
         return jsonify({'prediction': prediction})
 

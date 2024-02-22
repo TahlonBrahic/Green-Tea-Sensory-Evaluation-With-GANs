@@ -29,10 +29,10 @@ def create_tea_catechins_plot():
 def predict(model, features):
     global Model_RF_session, Model_MLP_session, Model_RNN_session
 
-    # Convert features to the format expected by the ONNX model
-    features_formatted = np.array(features, dtype=np.float32).reshape(1, -1)  # Example formatting
+    # Convert features to ONNX format
+    features_formatted = np.array(features, dtype=np.float32).reshape(1, -1)  
     
-    # Select the model based on model_name
+    # Model Selection
     if model == 'Random Forest':
         model_session = Model_RF_session
     elif model == 'Multilayer Perceptron':
@@ -40,11 +40,11 @@ def predict(model, features):
     elif model == 'Recurrent Neural Network':
         model_session = Model_RNN_session
     else:
-        return "Invalid model selected" # Not sure how this would even happen but error handling is good
+        return "Error" # Default error handling
     
     input_name = model_session.get_inputs()[0].name  
 
     # Perform prediction
     result = model_session.run(None, {input_name: features_formatted}) # None retrieves all
     
-    return result[0]  # Assuming the first output contains the prediction
+    return result[0]  

@@ -21,7 +21,7 @@
                     <option value="Random Forest">Random Forest</option>
                     <option value="Multilayer Perceptron">Multilayer Perceptron</option>
                     <option value="Recurrent Neural Network">Recurrent Neural Network</option>
-                </select>
+                </select>                
             </div>
             <div id="plot">{{ plot_div|safe }}</div>
             <form id="modelInputForm">
@@ -40,12 +40,15 @@
     </div>
 </section>
 
-<script>
+<<script>
     document.getElementById('modelInputForm').addEventListener('submit', async function(e) {
         e.preventDefault(); // prevent default form submission
         
         const formData = new FormData(e.target);
-        const formProps = Object.fromEntries(formData);
+        let formProps = Object.fromEntries(formData);
+        const modelChoice = document.getElementById('modelChoice').value;
+        formProps['model_choice'] = modelChoice; 
+
         const jsonData = JSON.stringify(formProps);
         
         // Using axios to send a POST 
@@ -56,13 +59,14 @@
                 },
             });
             
-            // Display the model prediction
-            document.getElementById('predictionResult').innerText = 'Prediction: ' + response.data;
+            // Display the model prediction w/ error handling
+            document.getElementById('predictionResult').innerText = 'Prediction: ' + response.data.prediction;
         } catch (error) {
             console.error('Error fetching predictions:', error);
             document.getElementById('predictionResult').innerText = 'Error fetching predictions.';
         }
     });
 </script>
+
 
 {% endblock %}
