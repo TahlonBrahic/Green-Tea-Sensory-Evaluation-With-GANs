@@ -26,10 +26,14 @@
             <div id="plot">{{ plot_div|safe }}</div>
             <form id="modelInputForm">
 
-                {% for i in range(1, 10) %}
+                {% set features = ['Catechin', 'Epicatechin', 'Gallocatechin', 'Epigallocatechin',
+                'Catechin_Gallate', 'Epicatechin_Gallate', 'Gallocatechin_Gallate',
+                'Epigallocatechin_Gallate', 'Caffeine'] %}
+
+                {% for feature in features %}
                 <div class="mb-3">
-                    <label for="inputFeature{{i}}" class="form-label">Feature {{i}}</label>
-                    <input type="number" class="form-control" id="inputFeature{{i}}" name="feature{{i}}" required>
+                    <label for="inputFeature{{ loop.index }}" class="form-label">{{ feature }}</label>
+                    <input type="number" class="form-control" id="inputFeature{{ loop.index }}" name="{{ feature }}" required>
                 </div>
                 {% endfor %}
 
@@ -59,7 +63,7 @@
                 },
             });
             
-            // Display the model prediction w/ error handling
+            // Display the model prediction w/ error
             document.getElementById('predictionResult').innerText = 'Prediction: ' + response.data.prediction;
         } catch (error) {
             console.error('Error fetching predictions:', error);
@@ -70,3 +74,11 @@
 
 
 {% endblock %}
+
+<!-- legacy code for review
+{% for i in range(1, 10) %}
+<div class="mb-3">
+    <label for="inputFeature{{i}}" class="form-label">Feature {{i}}</label>
+    <input type="number" class="form-control" id="inputFeature{{i}}" name="feature{{i}}" required>
+</div>
+{% endfor %} -->

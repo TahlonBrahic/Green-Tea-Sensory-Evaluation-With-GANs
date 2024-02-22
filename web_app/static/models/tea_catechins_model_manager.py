@@ -39,6 +39,7 @@ def predict(model, features):
         model_session = Model_MLP_session
     elif model == 'Recurrent Neural Network':
         model_session = Model_RNN_session
+        features_formatted = features_formatted.reshape(1, -1, len(features)) # Added because RNN's expect an input of (batch_size, sequence_length, num_features)
     else:
         return "Error" # Default error handling
     
