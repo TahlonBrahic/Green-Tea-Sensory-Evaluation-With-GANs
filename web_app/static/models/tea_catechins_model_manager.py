@@ -32,6 +32,12 @@ def load_tea_catechin_models():
     test_y = pd.read_csv(os.path.join(base_dir, "test_y.csv"))
     unscaled_test_y = pd.read_csv(os.path.join(base_dir, "unscaled_test_y.csv"))
 
+
+##### TEST #####
+
+    
+##### TEST #####    
+
 def get_predictions_for_all_test_data(scaler_session, model_session, test_data):
     # Assuming test_data is a DataFrame and we're scaling all its columns
     features = test_data.to_numpy(dtype=np.float32)
@@ -70,6 +76,11 @@ def generate_plot_predictions(model_name):
     y_pred = get_predictions_for_all_test_data(Chemical_Scaler_session, model_session, test_X)
     
     return y_pred    
+
+##### TEST #####
+
+
+##### TEST #####
 
 def create_tea_catechins_plot(feature_1_name, feature_2_name, model_name, y_pred):
     # Extracting features for the plot using the provided feature names
