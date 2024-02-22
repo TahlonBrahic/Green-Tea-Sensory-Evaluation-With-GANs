@@ -85,6 +85,20 @@ def predict(model, features):
     
     return result[0]  
 
+def scale(features, scaler_session):
+    input_name = scaler_session.get_inputs()[0].name
+    output_name = scaler_session.get_outputs()[0].name
+    scaled_features = scaler_session.run([output_name], {input_name: features.astype(np.float32)})[0]
+    return scaled_features
+
+def inverse_scale(predictions, scaler_session):
+    input_name = scaler_session.get_inputs()[0].name
+    output_name = scaler_session.get_outputs()[0].name
+    original_scale_predictions = scaler_session.run([output_name], {input_name: predictions.astype(np.float32)})[0]
+    return original_scale_predictions
+
+
 # Notes:
-# Scale features coming in
-# Inverse scale predictions coming out
+# The model only knows scaled data.
+# Scale features coming in.
+# Inverse scale predictions coming out.
