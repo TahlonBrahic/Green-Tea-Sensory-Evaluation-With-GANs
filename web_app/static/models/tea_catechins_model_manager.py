@@ -32,6 +32,45 @@ def load_tea_catechin_models():
     test_y = pd.read_csv(os.path.join(base_dir, "test_y.csv"))
     unscaled_test_y = pd.read_csv(os.path.join(base_dir, "unscaled_test_y.csv"))
 
+def get_predictions_for_all_test_data(scaler_session, model_session, test_data):
+    # Assuming test_data is a DataFrame and we're scaling all its columns
+    features = test_data.to_numpy(dtype=np.float32)
+    scaled_features = scale(features, scaler_session)
+    
+    # Check if model is RNN and reshape inputs accordingly
+    if model_session == Model_RNN_session:
+        # Assuming RNN expects 3D input: (batch_size, seq_length, num_features)
+        scaled_features = scaled_features.reshape(scaled_features.shape[0], 1, scaled_features.shape[1])
+    
+    input_name = model_session.get_inputs()[0].name
+    output_name = model_session.get_outputs()[0].name
+    predictions = model_session.run([output_name], {input_name: scaled_features})[0]
+    
+    # Assuming predictions need to be inverse scaled
+    original_scale_predictions = inverse_scale(predictions, Sensory_Scaler_session)
+    
+    return original_scale_predictions.flatten()  # Flatten if necessar
+
+def generate_plot_predictions(model_name):
+    global Chemical_Scaler_session, Model_RF_session, Model_MLP_session, Model_RNN_session, test_X
+    
+    # Load models if not already done
+    load_tea_catechin_models()
+    
+    model_session = {
+        'Random Forest': Model_RF_session,
+        'Multilayer Perceptron': Model_MLP_session,
+        'Recurrent Neural Network': Model_RNN_session
+    }.get(model_name, None)
+    
+    if model_session is None:
+        raise ValueError("Model not found")
+    
+    # Generate predictions for all test_X data
+    y_pred = get_predictions_for_all_test_data(Chemical_Scaler_session, model_session, test_X)
+    
+    return y_pred    
+
 def create_tea_catechins_plot(feature_1_name, feature_2_name, model_name, y_pred):
     # Extracting features for the plot using the provided feature names
 
