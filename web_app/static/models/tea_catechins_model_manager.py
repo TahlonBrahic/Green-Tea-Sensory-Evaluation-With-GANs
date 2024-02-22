@@ -6,10 +6,11 @@ import os
 
 # Initialize models
 Model_RF_session, Model_MLP_session, Model_RNN_session, Chemical_Scaler_session, Sensory_Scaler_session = None, None, None, None, None
-test_X = pd.read_csv('test_X.csv')
+test_X, unscaled_test_X  = None, None
 
 def load_tea_catechin_models():
     global Model_RF_session, Model_MLP_session, Model_RNN_session
+    global test_X, unscaled_test_X 
 
     # Needed for portability to elastic beanstalk
     base_dir = os.path.join(os.path.dirname(__file__), '../../../source/')
@@ -23,8 +24,10 @@ def load_tea_catechin_models():
 
     Chemical_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "chemical_scaler.onnx"))
     Sensory_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "sensory_scaler.onnx"))
+    test_X = pd.read_csv(os.path.join(base_dir, "test_X.csv"))
+    unscaled_test_X = pd.read_csv(os.path.join(base_dir, "unscaled_test_X.csv"))
 
-def create_tea_catechins_plot(test_X, y_pred, feature_1_name, feature_2_name, model_name):
+def create_tea_catechins_plot(feature_1_name, feature_2_name, model_name, y_pred):
     # Extracting features for the plot using the provided feature names
 
 
