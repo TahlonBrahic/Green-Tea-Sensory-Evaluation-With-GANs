@@ -1,6 +1,7 @@
 import onnxruntime as ort
 import plotly.graph_objs as go
 import os
+import numpy as np
 
 # Initialize models
 Model_RF_session, Model_MLP_session, Model_RNN_session = None, None, None
@@ -19,7 +20,31 @@ def load_tea_catechin_models():
         Model_RNN_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RNN.onnx'))
 
 def create_tea_catechins_plot():
+    # This is filler for an actual interactive plot
     data = [go.Scatter(x=[1, 2, 3, 4], y=[10, 11, 12, 13], mode='lines', name='test')]
     layout = go.Layout(title='Interactive Plot', xaxis=dict(title='X-axis'), yaxis=dict(title='Y-axis'))
     fig = go.Figure(data=data, layout=layout)
     return fig
+
+def predict(model, features):
+    global Model_RF_session, Model_MLP_session, Model_RNN_session
+
+    # Convert features to the format expected by the ONNX model
+    features_formatted = np.array(features, dtype=np.float32).reshape(1, -1)  # Example formatting
+    
+    # Select the model based on model_name
+    if model == 'Random Forest':
+        model_session = Model_RF_session
+    elif model == 'Multilayer Perceptron':
+        model_session = Model_MLP_session
+    elif model == 'Recurrent Neural Network':
+        model_session = Model_RNN_session
+    else:
+        return "Invalid model selected" # Not sure how this would even happen but error handling is good
+    
+    input_name = model_session.get_inputs()[0].name  
+
+    # Perform prediction
+    result = model_session.run(None, {input_name: features_formatted}) # None retrieves all
+    
+    return result[0]  # Assuming the first output contains the prediction

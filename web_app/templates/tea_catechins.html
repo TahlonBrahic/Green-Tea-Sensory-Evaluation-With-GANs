@@ -6,7 +6,7 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-<section id="Model Title" class="min-h-screen flex justify-center bg-gray-600 text-gray-200 px-4">
+<section id="Model" class="min-h-screen flex justify-center bg-gray-600 text-gray-200 px-4">
     <div class="max-w-4xl mx-auto text-left">
         <h1 class="pt-16 md:pt-20 lg:pt-24 text-3xl md:text-4xl lg:text-5xl font-bold">
             How Catechins & Caffeine Affect Perceived Sensory Appeal In Green Tea
@@ -15,42 +15,23 @@
             <h2>
                 Interact with the Machine Learning Model
             </h2>
+            <div class="mb-3">
+                <label for="modelChoice" class="form-label">Select Model</label>
+                <select class="form-control" id="modelChoice" name="model_choice">
+                    <option value="Random Forest">Random Forest</option>
+                    <option value="Multilayer Perceptron">Multilayer Perceptron</option>
+                    <option value="Recurrent Neural Network">Recurrent Neural Network</option>
+                </select>
+            </div>
             <div id="plot">{{ plot_div|safe }}</div>
             <form id="modelInputForm">
+
+                {% for i in range(1, 10) %}
                 <div class="mb-3">
-                    <label for="inputFeature1" class="form-label">Catechin</label>
-                    <input type="number" class="form-control" id="inputFeature1" name="feature1" required>
+                    <label for="inputFeature{{i}}" class="form-label">Feature {{i}}</label>
+                    <input type="number" class="form-control" id="inputFeature{{i}}" name="feature{{i}}" required>
                 </div>
-                <div class="mb-3">
-                    <label for="inputFeature2" class="form-label">Epicatechin</label>
-                <input type="number" class="form-control" id="inputFeature2" name="feature2" required>
-                <div class="mb-3">
-                    <label for="inputFeature1" class="form-label">Gallocatechin</label>
-                    <input type="number" class="form-control" id="inputFeature3" name="feature1" required>
-                </div>
-                <div class="mb-3">
-                    <label for="inputFeature2" class="form-label">Epigallocatechin</label>
-                    <input type="number" class="form-control" id="inputFeature4" name="feature2" required>
-                </div>
-                <div class="mb-3">
-                    <label for="inputFeature1" class="form-label">Catechin Gallate</label>
-                    <input type="number" class="form-control" id="inputFeature5" name="feature1" required>
-                </div>
-                <div class="mb-3">
-                    <label for="inputFeature2" class="form-label">Epicatechin Gallate</label>
-                <input type="number" class="form-control" id="inputFeature6" name="feature2" required>
-                <div class="mb-3">
-                    <label for="inputFeature1" class="form-label">Gallocatechin Gallate</label>
-                    <input type="number" class="form-control" id="inputFeature7" name="feature1" required>
-                </div>
-                <div class="mb-3">
-                    <label for="inputFeature2" class="form-label">Epigallocatechin Gallate</label>
-                    <input type="number" class="form-control" id="inputFeature8" name="feature2" required>
-                </div>
-                <div class="mb-3">
-                    <label for="inputFeature2" class="form-label">Caffeine</label>
-                    <input type="number" class="form-control" id="inputFeature9" name="feature2" required>
-                </div>
+                {% endfor %}
 
                 <button type="submit" class="btn btn-primary">Predict</button>
             </form>
@@ -65,17 +46,18 @@
         
         const formData = new FormData(e.target);
         const formProps = Object.fromEntries(formData);
+        const jsonData = JSON.stringify(formProps);
         
-        // Using axios above
+        // Using axios to send a POST 
         try { 
-            const response = await axios.post('/projects/tea-catechins', formProps, {
+            const response = await axios.post('/projects/tea-catechins', jsonData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
             
-            // This returns the model prediction
-            document.getElementById('predictionResult').innerText = JSON.stringify(response.data, null, 2);
+            // Display the model prediction
+            document.getElementById('predictionResult').innerText = 'Prediction: ' + response.data;
         } catch (error) {
             console.error('Error fetching predictions:', error);
             document.getElementById('predictionResult').innerText = 'Error fetching predictions.';
