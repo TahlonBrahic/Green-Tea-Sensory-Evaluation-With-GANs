@@ -1,0 +1,5 @@
+# fix scaling issue after model creation and training
+
+# fix notification button on main screen
+
+# add links and text to carousel

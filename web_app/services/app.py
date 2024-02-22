@@ -33,7 +33,7 @@ def projects():
 def tea_catechins():
 
     # Plot Related 
-    plot = create_tea_catechins_plot()
+    plot = create_tea_catechins_plot('Catechin', 'Caffeine', 'Random Forest') # Default 
     plot_div = plotly.offline.plot(plot, output_type='div', include_plotlyjs=False)
     load_tea_catechin_models() # Lazy loading, models aren't loaded until you visit this exact page to avoid website lag
 
@@ -41,7 +41,9 @@ def tea_catechins():
     model_names = ['Random Forest', 'Multilayer Perceptron' 'Recurrent Neural Network']
 
     if request.method == 'POST':
+
         data = request.json
+        # Console debugging
         print(data)
 
         model_choice = data.get('model_choice') 

@@ -1,10 +1,12 @@
 import onnxruntime as ort
 import plotly.graph_objs as go
-import os
 import numpy as np
+import pandas as pd
+import os
 
 # Initialize models
 Model_RF_session, Model_MLP_session, Model_RNN_session = None, None, None
+test_X = pd.read_csv('test_X.csv')
 
 def load_tea_catechin_models():
     global Model_RF_session, Model_MLP_session, Model_RNN_session
@@ -19,11 +21,41 @@ def load_tea_catechin_models():
     if Model_RNN_session is None:
         Model_RNN_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RNN.onnx'))
 
-def create_tea_catechins_plot():
-    # This is filler for an actual interactive plot
-    data = [go.Scatter(x=[1, 2, 3, 4], y=[10, 11, 12, 13], mode='lines', name='test')]
-    layout = go.Layout(title='Interactive Plot', xaxis=dict(title='X-axis'), yaxis=dict(title='Y-axis'))
-    fig = go.Figure(data=data, layout=layout)
+def create_tea_catechins_plot(test_X, y_pred, feature_1_name, feature_2_name, model_name):
+    # Extracting features for the plot using the provided feature names
+
+
+    feature_1_values = test_X[feature_1_name]
+    feature_2_values = test_X[feature_2_name]
+    
+    # Create a 3D scatter plot
+    fig = go.Figure(data=[go.Scatter3d(
+        x=feature_1_values,
+        y=feature_2_values,
+        z=y_pred,
+        mode='markers',
+        marker=dict(
+            size=5,
+            color=y_pred,  # color points by predicted values
+            colorscale='Plasma',  # Color scale
+            opacity=0.6
+        )
+    )])
+
+    # Update plot layout to use feature names in axis titles
+    fig.update_layout(
+        title=f'3D Scatter Plot of Sensory Evaluation for {model_name}',
+        scene=dict(
+            xaxis_title=feature_1_name,
+            yaxis_title=feature_2_name,
+            zaxis_title='Sensory Evaluation',
+            xaxis=dict(backgroundcolor="rgb(200, 200, 200)", color='white'),
+            yaxis=dict(backgroundcolor="rgb(200, 200, 200)", color='white'),
+            zaxis=dict(backgroundcolor="rgb(200, 200, 200)", color='white')
+        ),
+        template="plotly_dark"  # Use dark theme for the plot
+    )
+
     return fig
 
 def predict(model, features):
