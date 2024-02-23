@@ -643,14 +643,6 @@ html {
   inset: -0.375rem;
 }
 
-.left-0 {
-  left: 0px;
-}
-
-.top-1\/2 {
-  top: 50%;
-}
-
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -750,15 +742,6 @@ html {
 
 .grow {
   flex-grow: 1;
-}
-
-.-translate-y-1\/2 {
-  --tw-translate-y: -50%;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
-.transform {
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .items-center {
@@ -862,10 +845,6 @@ html {
 
 .pb-12 {
   padding-bottom: 3rem;
-}
-
-.pl-10 {
-  padding-left: 2.5rem;
 }
 
 .pt-12 {
@@ -977,16 +956,6 @@ html {
   transform: translateX(0);
 }
 
-.image-wrap {
-  width: 25%;
-  max-width: 400px;
-  height: 500px;
-  background-image: url('../personal_photo.jpg');
-  background-size: cover;
-  background-position: center;
-  z-index: -1;
-}
-
 .scroll {
   position: absolute;
   color: black;
@@ -994,10 +963,20 @@ html {
   left: 50%;
   transform: translateX(-50%);
   bottom: 100px;
+  height: 50px;
 }
 
 .line {
   position: absolute;
+  width: 1px;
+  height: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  background-image: linear-gradient(
+    to top,
+    rgb(157, 167, 165),
+    rgb(121, 124, 124));
 }
 
 .hover\:bg-gray-700:hover {
@@ -1035,6 +1014,11 @@ html {
 }
 
 @media (min-width: 640px) {
+  .sm\:mx-0 {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+
   .sm\:ml-6 {
     margin-left: 1.5rem;
   }
@@ -1054,6 +1038,10 @@ html {
   .sm\:px-6 {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
+  }
+
+  .sm\:text-left {
+    text-align: left;
   }
 }
 

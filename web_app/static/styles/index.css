@@ -84,8 +84,18 @@
   left: 50%;
   transform: translateX(-50%);
   bottom: 100px;
+  height: 50px;
 }
 
 .line {
   position: absolute;
+  width: 1px;
+  height: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  background-image: linear-gradient(
+    to top,
+    rgb(157, 167, 165),
+    rgb(121, 124, 124));
 }

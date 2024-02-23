@@ -1,20 +1,25 @@
 {% extends 'base.html' %} {% block content %}
 
 <div class="w-full">
-  <section id="Introduction" class="min-h-screen flex items-center justify-center bg-gray-700 text-gray-200 px-4 relative">
-    
-    <!-- Image container -->
-    <div class="absolute left-0 top-1/2 transform -translate-y-1/2">
-      <div class="w-64 h-64 bg-cover bg-center rounded-full overflow-hidden">
-        <img src="{{ url_for('static', filename='personal_photo.jpg') }}" alt="Picture of Tahlon Brahic">
+  <section
+    id="Introduction"
+    class="min-h-screen flex items-center justify-center bg-gray-700 text-white px-4 relative"
+  >
+    <!-- Content container with the image at the top -->
+    <div class="max-w-4xl mx-auto text-center sm:text-left">
+      <!-- Image container now inside the content container and above the text -->
+      <div
+        class="mx-auto sm:mx-0 w-64 h-64 bg-cover bg-center rounded-full overflow-hidden mb-4"
+      >
+        <img
+          src="{{ url_for('static', filename='personal_photo.jpg') }}"
+          alt="Picture of Tahlon Brahic"
+        />
       </div>
-    </div>
 
-    <!-- Content container -->
-    <div class="max-w-4xl mx-auto text-left pl-10">
       <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold">
-        <p class="hidden sm:ml-6 sm:block">
-          Hey, I'm Tahlon, <br>
+        <p class="hidden sm:block">
+          Hey, I'm Tahlon, <br />
           Data Scientist + Developer
         </p>
       </h1>
@@ -22,11 +27,12 @@
 
     <!-- Scroll Container -->
     <span class="scroll">Scroll Down</span>
+    <span class="line"></span>
   </section>
 
   <section
     id="About-Me"
-    class="min-h-screen flex items-center justify-center bg-gray-600 text-gray-200 px-4"
+    class="min-h-screen flex items-center justify-center bg-gray-600 text-gray-200 px-4 relative"
   >
     <div class="container d-flex h-100">
       <div class="row justify-content-center align-self-center w-100">
@@ -39,6 +45,9 @@
         </div>
       </div>
     </div>
+    <!-- Scroll Container -->
+    <span class="scroll">Scroll Down</span>
+    <span class="line"></span>
   </section>
 
   <section
