@@ -64,7 +64,7 @@
             });
             
             // Display the model prediction w/ error
-            document.getElementById('predictionResult').innerText = 'Prediction: ' + response.data.prediction;
+            document.getElementById('predictionResult').innerText = 'Prediction: ' + response.data.prediction[0][0];
         } catch (error) {
             console.error('Error fetching predictions:', error);
             document.getElementById('predictionResult').innerText = 'Error fetching predictions.';
