@@ -5,12 +5,27 @@
     class="min-h-screen flex items-center justify-center bg-gray-700 text-gray-200 px-4"
   >
     <div class="max-w-4xl mx-auto text-left">
-      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold hidden">
         Hey, I'm Tahlon, <br />
         Data Scientist + Developer
       </h1>
     </div>
   </section>
+
+  <script> // https://www.youtube.com/watch?v=T33NN_pPeNI
+    const observer = new IntersectionObserverEntry((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+        } else {
+          entry.target.classList.remove('show');
+        }
+      });
+    });
+
+    const hiddenElements = document.querySelectorAll('.hidden');
+    hiddenElements.forEach((el) => observer.obsserve(el));
+  </script>
 
   <section
     id="About-Me"

@@ -61,3 +61,14 @@
   margin-left: 0;
   padding-left: 0;
 }
+
+/* scrolling animations: */
+
+.hidden {
+  opacity: 0;
+  transition: all 1s;
+}
+
+.show {
+  opacity: 1;
+}
