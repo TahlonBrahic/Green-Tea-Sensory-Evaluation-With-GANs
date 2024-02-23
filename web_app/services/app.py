@@ -49,9 +49,10 @@ def tea_catechins():
         model_choice = data.get('model_choice') 
 
         # Extract features from the request
-        features = [
-            data.get(f'feature{i}') for i in range(1, 10)  
-        ]
+        features_keys = ['Catechin', 'Epicatechin', 'Gallocatechin', 'Epigallocatechin',
+                 'Catechin_Gallate', 'Epicatechin_Gallate', 'Gallocatechin_Gallate',
+                 'Epigallocatechin_Gallate', 'Caffeine']
+        features = [data.get(key) for key in features_keys]
 
         prediction = predict(model_choice, features)
 
