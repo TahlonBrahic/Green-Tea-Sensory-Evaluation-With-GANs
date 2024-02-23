@@ -921,6 +921,21 @@ html {
   padding-left: 0;
 }
 
+/* scrolling animations: */
+
+.hidden {
+  opacity: 0.1;
+  filter: blur(5px);
+  transform: translateX(-100%);
+  transition: all 1s;
+}
+
+.show {
+  opacity: 1;
+  filter: blur(5px);
+  transform: translateX(-100%);
+}
+
 .hover\:bg-gray-700:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(55 65 81 / var(--tw-bg-opacity));

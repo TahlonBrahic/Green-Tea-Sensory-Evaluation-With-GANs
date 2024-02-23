@@ -2,8 +2,6 @@
 
 # fix notification button on main screen
 
-# add links and text to carousel
-
 # add blurb on model page that talks about what inputs it expects and how to use and interact
 
 # add / edit comments on all 

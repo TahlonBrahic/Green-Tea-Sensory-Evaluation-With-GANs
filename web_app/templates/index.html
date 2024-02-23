@@ -1,31 +1,19 @@
 {% extends 'base.html' %} {% block content %}
+
 <div class="w-full">
   <section
     id="Introduction"
     class="min-h-screen flex items-center justify-center bg-gray-700 text-gray-200 px-4"
   >
     <div class="max-w-4xl mx-auto text-left">
-      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold hidden">
-        Hey, I'm Tahlon, <br />
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold">
+        <p class="hidden sm:ml-6 sm:block">
+          Hey, I'm Tahlon, <br />
         Data Scientist + Developer
+        </p>
       </h1>
     </div>
   </section>
-
-  <script> // https://www.youtube.com/watch?v=T33NN_pPeNI
-    const observer = new IntersectionObserverEntry((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('show');
-        } else {
-          entry.target.classList.remove('show');
-        }
-      });
-    });
-
-    const hiddenElements = document.querySelectorAll('.hidden');
-    hiddenElements.forEach((el) => observer.obsserve(el));
-  </script>
 
   <section
     id="About-Me"
@@ -36,8 +24,7 @@
         <div class="col-md-8">
           <div class="card text-white bg-dark">
             <div class="card-body">
-              <p class="typewriter-text" id="typewriter">
-              </p>
+              <p class="typewriter-text" id="typewriter"></p>
             </div>
           </div>
         </div>
@@ -45,62 +32,13 @@
     </div>
   </section>
 
-  <script>
-    const text = `In addition to development and data science, I am also a musician.
-    I play piano and saxophone, reflecting my belief in a well-rounded approach to education.
-    Projects I've taken on range from a chess-bot that replicates playing styles based on games exported as PGN files
-    to hardware hot-fixes for Linux distributions, showcasing my versatility in programming.
-    When I'm not diving into datasets or coding away, you'll find me playing piano, gaming, or taking care of my plant collection.
-    I'm always on the lookout for new challenges and opportunities to grow. I particularly like to contribute to open-source projects in the Linux community.`
-      .split("\n")
-      .map((line) => line.trim())
-      .join("\n")
-      .trim();
-  
-    let index = 0;
-    const typewriterElement = document.getElementById("typewriter");
-    
-    // Clear any pre-existing content in typewriterElement or it will preload spaces
-    typewriterElement.textContent = '';
-  
-    // Ensure only one cursor span is added to avoid duplicates
-    if (!typewriterElement.querySelector(".cursor")) {
-      const cursorSpan = document.createElement("span");
-      cursorSpan.classList.add("cursor");
-      typewriterElement.appendChild(cursorSpan);
-    }
-  
-    function typeWriterEffect(timeout = 60) {
-      if (index < text.length) {
-        const char = text.charAt(index);
-        if (char === "\n") {
-          const br = document.createElement("br");
-          typewriterElement.insertBefore(
-            br,
-            typewriterElement.querySelector(".cursor")
-          );
-        } else {
-          const textNode = document.createTextNode(char);
-          typewriterElement.insertBefore(
-            textNode,
-            typewriterElement.querySelector(".cursor")
-          );
-        }
-        index++;
-        setTimeout(() => typeWriterEffect(timeout), timeout);
-      }
-    }
-  
-    document.addEventListener("DOMContentLoaded", () => typeWriterEffect(60));
-  </script>
-
   <section
     id="Projects"
     class="min-h-screen flex items-center justify-center bg-gray-700 text-gray-200 px-4"
   >
     <div class="max-w-4xl mx-auto text-center pt-12 md:pt-16 lg:pt-20 pb-12">
       <h1
-        class="pt-40 md:pt-60 lg:pt-80 text-3xl md:text-4xl lg:text-5xl font-bold"
+        class="hidden sm:ml-6 sm:block pt-40 md:pt-60 lg:pt-80 text-3xl md:text-4xl lg:text-5xl font-bold"
       >
         Projects
       </h1>
@@ -206,4 +144,83 @@
     </div>
   </section>
 </div>
+
+<script defer>
+  window.onload = () => {
+    const text =
+      `In addition to development and data science, I am also a musician.
+      I play piano and saxophone, reflecting my belief in a well-rounded approach to education.
+      Projects I've taken on range from a chess-bot that replicates playing styles based on games exported as PGN files
+      to hardware hot-fixes for Linux distributions, showcasing my versatility in programming.
+      When I'm not diving into datasets or coding away, you'll find me playing piano, gaming, or taking care of my plant collection.
+      I'm always on the lookout for new challenges and opportunities to grow. I particularly like to contribute to open-source projects in the Linux community.`
+        .split("\n")
+        .map((line) => line.trim())
+        .join("\n")
+        .trim();
+
+    let index = 0;
+    const typewriterElement = document.getElementById("typewriter");
+    typewriterElement.textContent = ""; // Clear any pre-existing content
+
+    if (!typewriterElement.querySelector(".cursor")) {
+      const cursorSpan = document.createElement("span");
+      cursorSpan.classList.add("cursor");
+      typewriterElement.appendChild(cursorSpan);
+    }
+
+    function typeWriterEffect(timeout = 60) {
+      if (index < text.length) {
+        const char = text.charAt(index);
+        if (char === "\n") {
+          const br = document.createElement("br");
+          typewriterElement.insertBefore(
+            br,
+            typewriterElement.querySelector(".cursor")
+          );
+        } else {
+          const textNode = document.createTextNode(char);
+          typewriterElement.insertBefore(
+            textNode,
+            typewriterElement.querySelector(".cursor")
+          );
+        }
+        index++;
+        setTimeout(() => typeWriterEffect(timeout), timeout);
+      }
+    }
+    typeWriterEffect(60);
+
+    const hiddenElements = document.querySelectorAll(".hidden");
+    console.log("Observing elements:", hiddenElements.length);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // Enhanced debugging logs
+          console.log(
+            `Observing: ${entry.target.tagName}, isIntersecting: ${entry.isIntersecting}, intersectionRatio: ${entry.intersectionRatio}`
+          );
+          console.log("Entry boundingClientRect:", entry.boundingClientRect);
+          console.log("Entry rootBounds:", entry.rootBounds);
+
+          if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+            console.log(`Added 'show' to: ${entry.target.tagName}`);
+          } else {
+            entry.target.classList.remove("show");
+            console.log(`Removed 'show' from: ${entry.target.tagName}`);
+          }
+        });
+      },
+      { threshold: 0, rootMargin: "50px 0px" }
+    );
+
+    hiddenElements.forEach((el) => {
+      observer.observe(el);
+      console.log(`Now observing: ${el.tagName}`);
+    });
+  };
+</script>
+
 {% endblock %}
