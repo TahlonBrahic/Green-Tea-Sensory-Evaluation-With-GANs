@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 
-# Initialize models
+# Initialization
 Model_RF_session, Model_MLP_session, Model_RNN_session, Chemical_Scaler_session, Sensory_Scaler_session = None, None, None, None, None
 test_X, unscaled_test_X  = None, None
 test_y, unscaled_test_Y = None, None
@@ -12,6 +12,7 @@ test_y, unscaled_test_Y = None, None
 def load_tea_catechin_models():
     global Model_RF_session, Model_MLP_session, Model_RNN_session
     global test_X, unscaled_test_X 
+    global test_Y, unscaled_test_Y
 
     # Needed for portability to elastic beanstalk
     base_dir = os.path.join(os.path.dirname(__file__), '../../../source/')
