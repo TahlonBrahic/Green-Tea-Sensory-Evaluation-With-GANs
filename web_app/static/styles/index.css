@@ -3,13 +3,61 @@
 @tailwind utilities;
 
 @layer base {
-    html {
-      font-family: "Fira Code", monospace, system-ui, sans-serif;
-    }
-}
-  
-#typewriter {
-    white-space: pre-wrap; /* Preserves whitespace and wraps text */
+  html {
+    font-family: "Fira Code", monospace, system-ui, sans-serif;
+  }
+
+  .typewriter-text {
+    white-space: pre-wrap; /* Preserves whitespace and formatting */
+    text-align: left; /* Aligns text to the left */
+    margin-left: 0; /* Resets any inherited margin */
+    padding-left: 0; /* Resets any inherited padding to remove unintended indentation */
+    font-family: "Fira Code", monospace; /* Ensures the desired font is used */
+    line-height: 1.5; /* Adjusts line height for better readability */
+  }
+
+  .typewriter-text::after {
+    content: "|";
+    animation: blink 1s step-end infinite;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background-color: #fff;
+    margin-left: 2px;
+    animation: blink 1s infinite;
+  }
 }
 
-/* npx tailwindcss -i /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/index.css -o /home/tahlon/Documents/Projects/DTSC-691-Capstone-Project/web_app/static/styles/output.css --watch */
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+#typewriter {
+  white-space: pre-wrap; /* Preserves whitespace and wraps text */
+}
+
+.card-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.card-custom {
+  background-color: #333; /* Dark background for the card */
+  color: #fff; /* White text color */
+  padding: 20px;
+  border-radius: 8px; /* Optional: adds rounded corners to the card */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow to the card */
+}
+
+.card-body p {
+  text-indent: 0;
+  margin-left: 0;
+  padding-left: 0;
+}

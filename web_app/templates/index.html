@@ -1,98 +1,194 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div class="w-full">
-    <section id="Introduction" class="min-h-screen flex items-center justify-center bg-gray-700 text-gray-200 px-4">
-        <div class="max-w-4xl mx-auto text-left">
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold">Hey, I'm Tahlon, <br/> Data Scientist + Developer</h1>
-        </div>
-    </section>
+  <section
+    id="Introduction"
+    class="min-h-screen flex items-center justify-center bg-gray-700 text-gray-200 px-4"
+  >
+    <div class="max-w-4xl mx-auto text-left">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold">
+        Hey, I'm Tahlon, <br />
+        Data Scientist + Developer
+      </h1>
+    </div>
+  </section>
 
-    <section id="About-Me" class="min-h-screen flex items-center justify-center bg-gray-600 text-gray-200 px-4">
-        <p class="typewriter-text mt-4 text-base md:text-lg" id="typewriter">
-            <script>
-                const text = `In addition to devlopment and data science, I am also a musician. 
-                I play piano and saxophone, reflecting my belief in a well-rounded approach to education. Projects I've taken on range from a chess-bot that replicates playing styles based on games from exported as PGN files to hardware hot-fixes for linux distributions, showcasing my versatility.
-                When I'm not diving into datasets or coding away, you'll find me playing piano, gaming, or taking care of my plant collection.
-                I'm always on the lookout for new challenges and opportunities to grow. I particularly like to contribute to open-source projects in the Linux community.
-`;
-
-                let index = 0;
-                const typewriterElement = document.getElementById('typewriter');
-                const cursorSpan = document.createElement('span');
-                cursorSpan.classList.add('cursor');
-                typewriterElement.appendChild(cursorSpan);
-
-                function typeWriterEffect(timeout = 150) { // Slowed down the typing effect
-                    if (index < text.length) {
-                        cursorSpan.before(text.charAt(index));
-                        index++;
-                        setTimeout(() => typeWriterEffect(timeout), timeout);
-                    }
-                }
-
-                // Initiate the typewriter effect
-                document.addEventListener('DOMContentLoaded', typeWriterEffect);
-            </script>
-            <style>
-                .cursor {
-                    display: inline-block;
-                    width: 2px;
-                    height: 1em;
-                    background-color: #fff;
-                    margin-left: 2px;
-                    animation: blink 1s infinite;
-                }
-                @keyframes blink {
-                    50% { opacity: 0; }
-                }
-            </style>
-            </p>
-    </section>
-    
-    <section id="Projects" class="min-h-screen flex items-center justify-center bg-gray-700 text-gray-200 px-4">
-        <div class="max-w-4xl mx-auto text-center pt-12 md:pt-16 lg:pt-20 pb-12">
-          <h1 class="pt-40 md:pt-60 lg:pt-80 text-3xl md:text-4xl lg:text-5xl font-bold">Projects</h1>
-          <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="padding-bottom: 100px;">
-            <ol class="carousel-indicators">
-              <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-              <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-              <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-            </ol>
-            <div class="carousel-inner" style="height: 550px;">
-              <div class="carousel-item active">
-                <img class="d-block w-100" src="{{ url_for('static', filename='chess.jpg') }}" alt="Chess Bot in PyTorch" style="object-fit: cover; height: 100%;">
-                <div class="carousel-caption d-none d-md-block bg-opacity-50 bg-black p-3 rounded">
-                  <h5 class="text-white">Chess Bot in PyTorch</h5>
-                  <p><a href="https://github.com/TahlonBrahic/Data-Science-Portfolio/tree/main/Data%20Science/Brother%20Chess%20Bot" class="btn btn-primary">Learn more about the Chess Bot project</a></p>
-                </div>
-              </div>
-              <div class="carousel-item">
-                <img class="d-block w-100" src="{{ url_for('static', filename='laptop.jpg') }}" alt="Firmware hotfixes for Samsung Galaxy Book3 on Arch Linux" style="object-fit: cover; height: 100%;">
-                <div class="carousel-caption d-none d-md-block bg-opacity-50 bg-black p-3 rounded">
-                  <h5 class="text-white">Firmware Hotfixes for Samsung Galaxy Book3 on Arch Linux</h5>
-                  <p><a href="https://github.com/TahlonBrahic/Galaxy-Book3-Pro-360-Arch-Linux" class="btn btn-secondary">Discover the firmware hotfixes</a></p>
-                </div>
-              </div>
-              <div class="carousel-item">
-                <img class="d-block w-100" src="{{ url_for('static', filename='green_tea.jpg') }}" alt="How do catechins and caffeine affect perceived sensory evaluations in green tea?" style="object-fit: cover; height: 100%;">
-                <div class="carousel-caption d-none d-md-block bg-opacity-50 bg-black p-3 rounded">
-                  <h5 class="text-white">Impact of Catechins and Caffeine on Green Tea Sensory Evaluations</h5>
-                  <p><a href="/projects/tea-catechins" class="btn btn-success">Interact with the model</a></p>
-                </div>
-              </div>
+  <section
+    id="About-Me"
+    class="min-h-screen flex items-center justify-center bg-gray-600 text-gray-200 px-4"
+  >
+    <div class="container d-flex h-100">
+      <div class="row justify-content-center align-self-center w-100">
+        <div class="col-md-8">
+          <div class="card text-white bg-dark">
+            <div class="card-body">
+              <p class="typewriter-text" id="typewriter">
+              </p>
             </div>
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="sr-only">Next</span>
-            </a>
           </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </section>
 
+  <script>
+    const text = `In addition to development and data science, I am also a musician.
+    I play piano and saxophone, reflecting my belief in a well-rounded approach to education.
+    Projects I've taken on range from a chess-bot that replicates playing styles based on games exported as PGN files
+    to hardware hot-fixes for Linux distributions, showcasing my versatility in programming.
+    When I'm not diving into datasets or coding away, you'll find me playing piano, gaming, or taking care of my plant collection.
+    I'm always on the lookout for new challenges and opportunities to grow. I particularly like to contribute to open-source projects in the Linux community.`
+      .split("\n")
+      .map((line) => line.trim())
+      .join("\n")
+      .trim();
+  
+    let index = 0;
+    const typewriterElement = document.getElementById("typewriter");
+    
+    // Clear any pre-existing content in typewriterElement or it will preload spaces
+    typewriterElement.textContent = '';
+  
+    // Ensure only one cursor span is added to avoid duplicates
+    if (!typewriterElement.querySelector(".cursor")) {
+      const cursorSpan = document.createElement("span");
+      cursorSpan.classList.add("cursor");
+      typewriterElement.appendChild(cursorSpan);
+    }
+  
+    function typeWriterEffect(timeout = 60) {
+      if (index < text.length) {
+        const char = text.charAt(index);
+        if (char === "\n") {
+          const br = document.createElement("br");
+          typewriterElement.insertBefore(
+            br,
+            typewriterElement.querySelector(".cursor")
+          );
+        } else {
+          const textNode = document.createTextNode(char);
+          typewriterElement.insertBefore(
+            textNode,
+            typewriterElement.querySelector(".cursor")
+          );
+        }
+        index++;
+        setTimeout(() => typeWriterEffect(timeout), timeout);
+      }
+    }
+  
+    document.addEventListener("DOMContentLoaded", () => typeWriterEffect(60));
+  </script>
+
+  <section
+    id="Projects"
+    class="min-h-screen flex items-center justify-center bg-gray-700 text-gray-200 px-4"
+  >
+    <div class="max-w-4xl mx-auto text-center pt-12 md:pt-16 lg:pt-20 pb-12">
+      <h1
+        class="pt-40 md:pt-60 lg:pt-80 text-3xl md:text-4xl lg:text-5xl font-bold"
+      >
+        Projects
+      </h1>
+      <div
+        id="carouselExampleIndicators"
+        class="carousel slide"
+        data-ride="carousel"
+        style="padding-bottom: 100px"
+      >
+        <ol class="carousel-indicators">
+          <li
+            data-target="#carouselExampleIndicators"
+            data-slide-to="0"
+            class="active"
+          ></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner" style="height: 550px">
+          <div class="carousel-item active">
+            <img
+              class="d-block w-100"
+              src="{{ url_for('static', filename='chess.jpg') }}"
+              alt="Chess Bot in PyTorch"
+              style="object-fit: cover; height: 100%"
+            />
+            <div
+              class="carousel-caption d-none d-md-block bg-opacity-50 bg-black p-3 rounded"
+            >
+              <h5 class="text-white">Chess Bot in PyTorch</h5>
+              <p>
+                <a
+                  href="https://github.com/TahlonBrahic/Data-Science-Portfolio/tree/main/Data%20Science/Brother%20Chess%20Bot"
+                  class="btn btn-primary"
+                  >Learn more about the Chess Bot project</a
+                >
+              </p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img
+              class="d-block w-100"
+              src="{{ url_for('static', filename='laptop.jpg') }}"
+              alt="Firmware hotfixes for Samsung Galaxy Book3 on Arch Linux"
+              style="object-fit: cover; height: 100%"
+            />
+            <div
+              class="carousel-caption d-none d-md-block bg-opacity-50 bg-black p-3 rounded"
+            >
+              <h5 class="text-white">
+                Firmware Hotfixes for Samsung Galaxy Book3 on Arch Linux
+              </h5>
+              <p>
+                <a
+                  href="https://github.com/TahlonBrahic/Galaxy-Book3-Pro-360-Arch-Linux"
+                  class="btn btn-secondary"
+                  >Discover the firmware hotfixes</a
+                >
+              </p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img
+              class="d-block w-100"
+              src="{{ url_for('static', filename='green_tea.jpg') }}"
+              alt="How do catechins and caffeine affect perceived sensory evaluations in green tea?"
+              style="object-fit: cover; height: 100%"
+            />
+            <div
+              class="carousel-caption d-none d-md-block bg-opacity-50 bg-black p-3 rounded"
+            >
+              <h5 class="text-white">
+                Impact of Catechins and Caffeine on Green Tea Sensory
+                Evaluations
+              </h5>
+              <p>
+                <a href="/projects/tea-catechins" class="btn btn-success"
+                  >Interact with the model</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+        <a
+          class="carousel-control-prev"
+          href="#carouselExampleIndicators"
+          role="button"
+          data-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a
+          class="carousel-control-next"
+          href="#carouselExampleIndicators"
+          role="button"
+          data-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+    </div>
+  </section>
 </div>
 {% endblock %}
