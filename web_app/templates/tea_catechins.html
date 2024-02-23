@@ -44,7 +44,7 @@
     </div>
 </section>
 
-<<script>
+<script>
     document.getElementById('modelInputForm').addEventListener('submit', async function(e) {
         e.preventDefault(); // prevent default form submission
         
@@ -69,9 +69,11 @@
             console.error('Error fetching predictions:', error);
             document.getElementById('predictionResult').innerText = 'Error fetching predictions.';
         }
+
+        // Reset the form to allow resubmission with the same data
+        document.getElementById('modelInputForm').reset();
     });
 </script>
-
 
 {% endblock %}
 
