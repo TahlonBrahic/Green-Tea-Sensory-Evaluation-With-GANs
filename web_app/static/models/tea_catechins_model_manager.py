@@ -141,10 +141,8 @@ def predict(model, features):
     input_name = model_session.get_inputs()[0].name
     output_name = model_session.get_outputs()[0].name
     
-    # Adjust for RNN model if necessary
     if model == 'Recurrent Neural Network':
-        # Ensure the shape is correct for RNN; adjust based on your model's requirements
-        features_array = features_array.reshape(1, -1, 9)  # Adjust as per your model's expected input shape
+        features_array = prepare_rnn_input(features_array, 2000)  
 
     # Perform prediction
     prediction = model_session.run([output_name], {input_name: features_array})[0]
