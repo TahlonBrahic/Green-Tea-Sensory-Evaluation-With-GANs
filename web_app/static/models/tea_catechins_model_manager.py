@@ -11,6 +11,7 @@ test_y, unscaled_test_Y = None, None
 
 def load_tea_catechin_models():
     global Model_RF_session, Model_MLP_session, Model_RNN_session
+    global Chemical_Scaler_session, Sensory_Scaler_session
     global test_X, unscaled_test_X 
     global test_Y, unscaled_test_Y
 
@@ -24,8 +25,17 @@ def load_tea_catechin_models():
     if Model_RNN_session is None:
         Model_RNN_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RNN.onnx'))
 
-    Chemical_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "chemical_scaler.onnx"))
-    Sensory_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "sensory_scaler.onnx"))
+    try:
+        Chemical_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "chemical_scaler.onnx"))
+        print("Loaded Chemical Scaler ONNX model successfully.") # Debugging beause it keeps failling to load
+    except Exception as e:
+        print(f"Failed to load Chemical Scaler ONNX model: {e}")
+
+    try:
+        Sensory_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "sensory_scaler.onnx"))
+        print("Loaded Sensory Scaler ONNX model successfully.") # Debugging beause it keeps failling to load
+    except Exception as e:
+        print(f"Failed to load Sensory Scaler ONNX model: {e}")
 
     test_X = pd.read_csv(os.path.join(base_dir, "test_X.csv"))
     unscaled_test_X = pd.read_csv(os.path.join(base_dir, "unscaled_test_X.csv"))
@@ -72,7 +82,7 @@ def generate_plot_predictions(model_name):
     
     return y_pred    
 
-def create_tea_catechins_plot(feature_1_name='Catechins', feature_2_name='Caffeine', model_name='Random Forest'):
+def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffeine', model_name='Random Forest'):
     global test_X
     
     # Generate predictions for all test_X data based on the selected model
@@ -133,7 +143,7 @@ def predict(model, features):
     
     # For RNN, ensure the input is reshaped appropriately
     if model == 'Recurrent Neural Network':
-        scaled_features = scaled_features.reshape(1, -1, len(features))
+        scaled_features = scaled_features.reshape(1, 2000, 9) # Middle is sequence length
     
     # Perform prediction
     prediction = model_session.run([output_name], {input_name: scaled_features.astype(np.float32)})[0]
@@ -146,7 +156,9 @@ def predict(model, features):
 def scale(features, scaler_session=Chemical_Scaler_session):
     input_name = scaler_session.get_inputs()[0].name
     output_name = scaler_session.get_outputs()[0].name
-    scaled_features = scaler_session.run([output_name], {input_name: features.astype(np.float32)})[0]
+    features_array = np.array(features).astype(np.float32).reshape(-1, 9)
+    print(features_array)
+    scaled_features = scaler_session.run([output_name], {input_name: features_array})[0]
     return scaled_features
 
 def inverse_scale(predictions, scaler_session=Sensory_Scaler_session):
@@ -160,3 +172,6 @@ def inverse_scale(predictions, scaler_session=Sensory_Scaler_session):
 # The model only knows scaled data.
 # Scale features coming in.
 # Inverse scale predictions coming out.
+
+if __name__ == '__main__': # Debugging
+    load_tea_catechin_models()
