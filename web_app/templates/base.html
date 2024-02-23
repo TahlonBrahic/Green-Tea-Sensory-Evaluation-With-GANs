@@ -1,55 +1,180 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  
   <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <!-- Imports: Tailwind, Bootstrap, and Fira Font -->
-    <link href="{{ url_for('static', filename='styles/output.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <link
+      href="{{ url_for('static', filename='styles/output.css') }}"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap"
+      rel="stylesheet"
+    />
 
     <title>{% block title %} {% endblock %}</title>
   </head>
-  <body class=""> 
+  <body class="">
     <nav class="bg-gray-900">
       <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div class="relative flex h-16 items-center justify-between">
-          <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+          <div
+            class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start"
+          >
             <div class="flex flex-shrink-0 items-center">
-              <img class="h-8 w-auto rounded-full" src="{{ url_for('static', filename='logo.png') }}" alt="Tahlon's Logo">
+              <img
+                class="h-8 w-auto rounded-full"
+                src="{{ url_for('static', filename='logo.png') }}"
+                alt="Tahlon's Logo"
+              />
             </div>
             <div class="sm:ml-6 sm:block">
               <div class="flex space-x-4">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                <a href="{{ url_for('home') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Home</a>
-                <a href="{{ url_for('projects') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Projects</a>
-                <a href="{{ url_for('resume') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Resume</a>
-                <a href="https://github.com/tahlonbrahic" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Github</a>
+                <a
+                  href="{{ url_for('home') }}"
+                  class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                  >Home</a
+                >
+                <a
+                  href="{{ url_for('projects') }}"
+                  class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                  >Projects</a
+                >
+                <a
+                  href="{{ url_for('resume') }}"
+                  class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                  >Resume</a
+                >
+                <a
+                  href="https://github.com/tahlonbrahic"
+                  class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                  >Github</a
+                >
               </div>
             </div>
           </div>
           <div class="flex items-center">
-            <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+            <button
+              type="button"
+              class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+            >
               <span class="absolute -inset-1.5"></span>
               <span class="sr-only">View notifications</span>
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+              <svg
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+                />
               </svg>
             </button>
           </div>
         </div>
       </div>
     </nav>
-    <div>
-        {% block content %} {% endblock %}
-    </div>
-    <!-- Optional JavaScript -->
+    <div>{% block content %} {% endblock %}</div>
+    <!--JavaScript -->
+    <script defer>
+      window.onload = () => {
+        const text =
+          `In addition to development and data science, I am also a musician.
+          I play piano and saxophone, reflecting my belief in a well-rounded approach to education.
+          Projects I've taken on range from a chess-bot that replicates playing styles based on games exported as PGN files
+          to hardware hot-fixes for Linux distributions, showcasing my versatility in programming.
+          When I'm not diving into datasets or coding away, you'll find me playing piano, gaming, or taking care of my plant collection.
+          I'm always on the lookout for new challenges and opportunities to grow. I particularly like to contribute to open-source projects in the Linux community.`
+            .split("\n")
+            .map((line) => line.trim())
+            .join("\n")
+            .trim();
+
+        let index = 0;
+        const typewriterElement = document.getElementById("typewriter");
+        typewriterElement.textContent = ""; // Clear any pre-existing content
+
+        if (!typewriterElement.querySelector(".cursor")) {
+          const cursorSpan = document.createElement("span");
+          cursorSpan.classList.add("cursor");
+          typewriterElement.appendChild(cursorSpan);
+        }
+
+        function typeWriterEffect(timeout = 60) {
+          if (index < text.length) {
+            const char = text.charAt(index);
+            if (char === "\n") {
+              const br = document.createElement("br");
+              typewriterElement.insertBefore(
+                br,
+                typewriterElement.querySelector(".cursor")
+              );
+            } else {
+              const textNode = document.createTextNode(char);
+              typewriterElement.insertBefore(
+                textNode,
+                typewriterElement.querySelector(".cursor")
+              );
+            }
+            index++;
+            setTimeout(() => typeWriterEffect(timeout), timeout);
+          }
+        }
+        typeWriterEffect(60);
+
+        const hiddenElements = document.querySelectorAll(".hidden");
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("show");
+              } else {
+                entry.target.classList.remove("show");
+              }
+            });
+          },
+          { threshold: 0, rootMargin: "50px 0px" }
+        );
+
+        hiddenElements.forEach((el) => {
+          observer.observe(el);
+          console.log(`Now observing: ${el.tagName}`);
+        });
+      };
+    </script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>

@@ -76,3 +76,27 @@
     filter: blur(0);
   transform: translateX(0);
 }
+
+.image-wrap {
+  width: 25%;
+  max-width: 400px;
+  height: 500px;
+  background-image: url('../personal_photo.jpg');
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+}
+
+
+.scroll {
+  position: absolute;
+  color: black;
+  font-weight: 300;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 100px;
+}
+
+.line {
+  position: absolute;
+}
