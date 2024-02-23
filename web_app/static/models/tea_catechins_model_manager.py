@@ -6,61 +6,52 @@ import os
 
 # Initialization
 Model_RF_session, Model_MLP_session, Model_RNN_session, Chemical_Scaler_session, Sensory_Scaler_session = None, None, None, None, None
-test_X, unscaled_test_X  = None, None
-test_y, unscaled_test_Y = None, None
+test_X, unscaled_test_X = None, None
+test_y, unscaled_test_y = None, None  
 
 def load_tea_catechin_models():
     global Model_RF_session, Model_MLP_session, Model_RNN_session
     global Chemical_Scaler_session, Sensory_Scaler_session
-    global test_X, unscaled_test_X 
-    global test_Y, unscaled_test_Y
+    global test_X, unscaled_test_X
+    global test_y, unscaled_test_y  
 
-    # Needed for portability to elastic beanstalk
     base_dir = os.path.join(os.path.dirname(__file__), '../../../source/')
 
-    if Model_RF_session is None:
+    try:
         Model_RF_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RF.onnx'))
-    if Model_MLP_session is None:
         Model_MLP_session = ort.InferenceSession(os.path.join(base_dir, 'Model_MLP.onnx'))
-    if Model_RNN_session is None:
         Model_RNN_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RNN.onnx'))
-
-    try:
         Chemical_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "chemical_scaler.onnx"))
-        print("Loaded Chemical Scaler ONNX model successfully.") # Debugging beause it keeps failling to load
-    except Exception as e:
-        print(f"Failed to load Chemical Scaler ONNX model: {e}")
-
-    try:
         Sensory_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "sensory_scaler.onnx"))
-        print("Loaded Sensory Scaler ONNX model successfully.") # Debugging beause it keeps failling to load
+        test_X = pd.read_csv(os.path.join(base_dir, "test_X.csv"))
+        unscaled_test_X = pd.read_csv(os.path.join(base_dir, "unscaled_test_X.csv"))
+        test_y = pd.read_csv(os.path.join(base_dir, "test_y.csv"))
+        unscaled_test_y = pd.read_csv(os.path.join(base_dir, "unscaled_test_y.csv"))
+        print("All models and data loaded successfully.")
     except Exception as e:
-        print(f"Failed to load Sensory Scaler ONNX model: {e}")
-
-    test_X = pd.read_csv(os.path.join(base_dir, "test_X.csv"))
-    unscaled_test_X = pd.read_csv(os.path.join(base_dir, "unscaled_test_X.csv"))
-
-    test_y = pd.read_csv(os.path.join(base_dir, "test_y.csv"))
-    unscaled_test_y = pd.read_csv(os.path.join(base_dir, "unscaled_test_y.csv"))
+        print(f"Error loading models or data: {e}")
    
+# Prediction
+
 def get_model_predictions(scaler_session, model_session, test_data):
-    # Convert test_data to numpy
     features = test_data.to_numpy(dtype=np.float32)
     scaled_features = scale(features, scaler_session)
-    
-    # Check if model is RNN and reshape inputs accordingly
-    if model_session == Model_RNN_session:
-        # Assuming RNN expects 3D input: (batch_size, seq_length, num_features)
-        scaled_features = scaled_features.reshape(scaled_features.shape[0], 1, scaled_features.shape[1])
-    
-    input_name = model_session.get_inputs()[0].name
-    output_name = model_session.get_outputs()[0].name
-    predictions = model_session.run([output_name], {input_name: scaled_features})[0]
-    
-    # Assuming predictions need to be inverse scaled
-    original_scale_predictions = inverse_scale(predictions, Sensory_Scaler_session)
-    
-    return original_scale_predictions.flatten()  # Flatten if necessary
+    if scaled_features is None:
+        return None
+
+    try:
+        if model_session == Model_RNN_session:
+            scaled_features = scaled_features.reshape(scaled_features.shape[0], 1, scaled_features.shape[1])
+        
+        input_name = model_session.get_inputs()[0].name
+        output_name = model_session.get_outputs()[0].name
+        predictions = model_session.run([output_name], {input_name: scaled_features})[0]
+        
+        original_scale_predictions = inverse_scale(predictions, Sensory_Scaler_session)
+        return original_scale_predictions.flatten() if original_scale_predictions is not None else None
+    except Exception as e:
+        print(f"Error getting model predictions: {e}")
+        return None
 
 def generate_plot_predictions(model_name):
     global Chemical_Scaler_session, Model_RF_session, Model_MLP_session, Model_RNN_session, test_X
@@ -81,6 +72,29 @@ def generate_plot_predictions(model_name):
     y_pred = get_model_predictions(Chemical_Scaler_session, model_session, test_X)
     
     return y_pred    
+
+
+def predict(model, features):
+    features_array = np.array(features, dtype=np.float32).reshape(-1, 9)
+    model_session = {'Random Forest': Model_RF_session, 'Multilayer Perceptron': Model_MLP_session, 'Recurrent Neural Network': Model_RNN_session}.get(model, None)
+    
+    if model_session is None:
+        print("Error: Model not found")
+        return None
+
+    try:
+        input_name = model_session.get_inputs()[0].name
+        output_name = model_session.get_outputs()[0].name
+        if model == 'Recurrent Neural Network':
+            features_array = prepare_rnn_input(features_array)
+        
+        prediction = model_session.run([output_name], {input_name: features_array})[0]
+        return prediction
+    except Exception as e:
+        print(f"Error making prediction for {model}: {e}")
+        return None
+    
+# Interactive Plot
 
 def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffeine', model_name='Random Forest'):
     global test_X
@@ -122,60 +136,33 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
 
     return fig
 
-def predict(model, features):
-    global Model_RF_session, Model_MLP_session, Model_RNN_session, Chemical_Scaler_session, Sensory_Scaler_session
-    
-    # Ensure features are in float32
-    features_array = np.array(features, dtype=np.float32).reshape(-1, 9)  # Assuming 9 features per input
+# Utility Functions
 
-    # Select the appropriate model session
-    model_session = {
-        'Random Forest': Model_RF_session,
-        'Multilayer Perceptron': Model_MLP_session,
-        'Recurrent Neural Network': Model_RNN_session
-    }.get(model, None)
-    
-    if model_session is None:
-        return "Error: Model not found"
-    
-    input_name = model_session.get_inputs()[0].name
-    output_name = model_session.get_outputs()[0].name
-    
-    if model == 'Recurrent Neural Network':
-        features_array = prepare_rnn_input(features_array, 2000)  
+def scale(features, scaler_session):
+    try:
+        input_name = scaler_session.get_inputs()[0].name
+        output_name = scaler_session.get_outputs()[0].name
+        features_array = np.array(features).astype(np.float32).reshape(-1, 9)
+        scaled_features = scaler_session.run([output_name], {input_name: features_array})[0]
+        return scaled_features
+    except Exception as e:
+        print(f"Error scaling features: {e}")
+        return None
 
-    # Perform prediction
-    prediction = model_session.run([output_name], {input_name: features_array})[0]
-    
-    # Process and return the prediction as needed
-    return prediction
-
-
-def scale(features, scaler_session=Chemical_Scaler_session):
-    input_name = scaler_session.get_inputs()[0].name
-    output_name = scaler_session.get_outputs()[0].name
-    features_array = np.array(features).astype(np.float32).reshape(-1, 9)
-    print(features_array)
-    scaled_features = scaler_session.run([output_name], {input_name: features_array})[0]
-    return scaled_features
-
-def inverse_scale(predictions, scaler_session=Sensory_Scaler_session):
-    input_name = scaler_session.get_inputs()[0].name
-    output_name = scaler_session.get_outputs()[0].name
-    original_scale_predictions = scaler_session.run([output_name], {input_name: predictions.astype(np.float32)})[0]
-    return original_scale_predictions
+def inverse_scale(predictions, scaler_session):
+    try:
+        input_name = scaler_session.get_inputs()[0].name
+        output_name = scaler_session.get_outputs()[0].name
+        original_scale_predictions = scaler_session.run([output_name], {input_name: predictions.astype(np.float32)})[0]
+        return original_scale_predictions
+    except Exception as e:
+        print(f"Error inverse scaling predictions: {e}")
+        return None
 
 def prepare_rnn_input(features, target_sequence_length=2000, num_features=9):
-    # Assuming `features` is a list or 1D numpy array of your input features
-    # Initialize a padded array with zeros
     padded_input = np.zeros((target_sequence_length, num_features), dtype=np.float32)
-    
-    # Fill in the real features up to the length of your actual data
-    sequence_length = min(len(features), target_sequence_length)
+    sequence_length = min(features.shape[0], target_sequence_length)
     padded_input[:sequence_length, :] = features[:sequence_length, :]
-    
-    # Reshape for ONNX (batch_size, sequence_length, num_features)
-    # Assuming a batch size of 1 for individual predictions
     return padded_input.reshape(1, target_sequence_length, num_features)
 
 

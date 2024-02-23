@@ -38,7 +38,7 @@ def tea_catechins():
     load_tea_catechin_models() # Lazy loading, models aren't loaded until you visit this exact page to avoid website lag
 
     # Model Selection Releated
-    model_names = ['Random Forest', 'Multilayer Perceptron' 'Recurrent Neural Network']
+    model_names = ['Random Forest', 'Multilayer Perceptron', 'Recurrent Neural Network']
 
     if request.method == 'POST':
 
