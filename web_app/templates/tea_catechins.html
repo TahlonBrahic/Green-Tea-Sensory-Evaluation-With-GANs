@@ -63,17 +63,28 @@
                 },
             });
             
-            // Display the model prediction w/ error
-            document.getElementById('predictionResult').innerText = 'Prediction: ' + response.data.prediction[0][0];
+            // Extract prediction based on the selected model
+            let prediction;
+            if (modelChoice === 'Recurrent Neural Network') {
+                // For RNN, take the first value in the prediction array
+                prediction = response.data.prediction[0];
+            } else {
+                // For other models, take the first value in the prediction array
+                prediction = response.data.prediction[0][0];
+            }
+
+            // Display the model prediction
+            document.getElementById('predictionResult').innerText = 'Prediction: ' + prediction;
         } catch (error) {
             console.error('Error fetching predictions:', error);
-            document.getElementById('predictionResult').innerText = 'Error fetching predictions.';
+            document.getElementById('predictionResult').innerText = 'Error fetching predictions';
         }
 
         // Reset the form to allow resubmission with the same data
         document.getElementById('modelInputForm').reset();
     });
 </script>
+
 
 {% endblock %}
 

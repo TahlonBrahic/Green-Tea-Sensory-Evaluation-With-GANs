@@ -43,8 +43,6 @@ def tea_catechins():
     if request.method == 'POST':
 
         data = request.json
-        # Console debugging
-        print(data)
 
         model_choice = data.get('model_choice') 
 
@@ -60,11 +58,7 @@ def tea_catechins():
         if isinstance(prediction, np.ndarray):
             prediction = prediction.tolist()
         
-        if model_choice == 'Recurrent Neural Network': 
-            prediction_value = prediction[-1][0]
-            return jsonify({'prediction': prediction_value})
-
-        return jsonify({'prediction': prediction})
+            return jsonify({'prediction': prediction})
 
     # For GET requests, serve the project page
     return render_template('tea_catechins.html', plot_div=plot_div)  # Assuming you have a template for this page

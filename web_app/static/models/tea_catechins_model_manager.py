@@ -18,33 +18,15 @@ def load_tea_catechin_models():
     base_dir = os.path.join(os.path.dirname(__file__), '../../../source/')
 
     try:
-        Model_RF_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RF.onnx'))
-        print("RF Model loaded successfully.")
-        
-        Model_MLP_session = ort.InferenceSession(os.path.join(base_dir, 'Model_MLP.onnx'))
-        print("MLP Model loaded successfully.")
-        # Print the MLP model's input and output shapes
-        print("MLP Model Input Shape:", Model_MLP_session.get_inputs()[0].shape)
-        print("MLP Model Output Shape:", Model_MLP_session.get_outputs()[0].shape)
-        
+        Model_RF_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RF.onnx'))      
+        Model_MLP_session = ort.InferenceSession(os.path.join(base_dir, 'Model_MLP.onnx'))      
         Model_RNN_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RNN.onnx'))
-        print("RNN Model loaded successfully.")
-        # Optionally, print the RNN model's input and output shapes if needed
-        print("RNN Model Input Shape:", Model_RNN_session.get_inputs()[0].shape)
-        print("RNN Model Output Shape:", Model_RNN_session.get_outputs()[0].shape)
-
         Chemical_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "chemical_scaler.onnx"))
-        print("Chemical Scaler loaded successfully.")
-        
         Sensory_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "sensory_scaler.onnx"))
-        print("Sensory Scaler loaded successfully.")
-        
         test_X = pd.read_csv(os.path.join(base_dir, "test_X.csv"))
         unscaled_test_X = pd.read_csv(os.path.join(base_dir, "unscaled_test_X.csv"))
         test_y = pd.read_csv(os.path.join(base_dir, "test_y.csv"))
         unscaled_test_y = pd.read_csv(os.path.join(base_dir, "unscaled_test_y.csv"))
-        
-        print("All models and data loaded successfully.")
     except Exception as e:
         print(f"Error loading models or data: {e}")
 
@@ -92,8 +74,10 @@ def generate_plot_predictions(model_name):
     return y_pred    
 
 def predict(model, features):
-    features_array = np.array(features, dtype=np.float32).reshape(-1, 9)
-    model_session = {'Random Forest': Model_RF_session, 'Multilayer Perceptron': Model_MLP_session, 'Recurrent Neural Network': Model_RNN_session}.get(model, None)
+    features_array = np.array(features, dtype=np.float32).reshape(1, -1)
+    model_session = {'Random Forest': Model_RF_session, 
+                     'Multilayer Perceptron': Model_MLP_session, 
+                     'Recurrent Neural Network': Model_RNN_session}.get(model, None)
     
     if model_session is None:
         print("Error: Model not found")
@@ -102,19 +86,25 @@ def predict(model, features):
     try:
         input_name = model_session.get_inputs()[0].name
         output_name = model_session.get_outputs()[0].name
-        print(f"Model: {model}, Input Name: {input_name}, Output Name: {output_name}")
         
         if model == 'Recurrent Neural Network':
             features_array = prepare_rnn_input(features_array)
-            print(f"RNN Input Shape: {features_array.shape}")
+            prediction = model_session.run([output_name], {input_name: features_array})[0]
+            prediction = prediction.flatten()[-1]
+        else:
+            prediction = model_session.run([output_name], {input_name: features_array})[0]
+            prediction = prediction.flatten()
         
-        prediction = model_session.run([output_name], {input_name: features_array})[0]
-        print(f"Prediction: {prediction}")  # Debugging print statement
+        prediction = np.array(prediction, dtype=np.float32)
+        prediction = inverse_scale(prediction, Sensory_Scaler_session)
+        
+        print(f"Prediction: {prediction}")  
         return prediction
     except Exception as e:
         print(f"Error making prediction for {model}: {e}")
         return None
-    
+
+
 # Interactive Plot
 
 def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffeine', model_name='Random Forest'):
