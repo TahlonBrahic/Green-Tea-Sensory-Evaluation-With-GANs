@@ -31,15 +31,9 @@ def load_tea_catechin_models():
 
     test_y = pd.read_csv(os.path.join(base_dir, "test_y.csv"))
     unscaled_test_y = pd.read_csv(os.path.join(base_dir, "unscaled_test_y.csv"))
-
-
-##### TEST #####
-
-    
-##### TEST #####    
-
-def get_predictions_for_all_test_data(scaler_session, model_session, test_data):
-    # Assuming test_data is a DataFrame and we're scaling all its columns
+   
+def get_model_predictions(scaler_session, model_session, test_data):
+    # Convert test_data to numpy
     features = test_data.to_numpy(dtype=np.float32)
     scaled_features = scale(features, scaler_session)
     
@@ -55,7 +49,7 @@ def get_predictions_for_all_test_data(scaler_session, model_session, test_data):
     # Assuming predictions need to be inverse scaled
     original_scale_predictions = inverse_scale(predictions, Sensory_Scaler_session)
     
-    return original_scale_predictions.flatten()  # Flatten if necessar
+    return original_scale_predictions.flatten()  # Flatten if necessary
 
 def generate_plot_predictions(model_name):
     global Chemical_Scaler_session, Model_RF_session, Model_MLP_session, Model_RNN_session, test_X
@@ -73,21 +67,19 @@ def generate_plot_predictions(model_name):
         raise ValueError("Model not found")
     
     # Generate predictions for all test_X data
-    y_pred = get_predictions_for_all_test_data(Chemical_Scaler_session, model_session, test_X)
+    y_pred = get_model_predictions(Chemical_Scaler_session, model_session, test_X)
     
     return y_pred    
 
-##### TEST #####
-
-
-##### TEST #####
-
-def create_tea_catechins_plot(feature_1_name, feature_2_name, model_name, y_pred):
+def create_tea_catechins_plot(feature_1_name='Catechins', feature_2_name='Caffeine', model_name='Random Forest'):
+    global test_X
+    
+    # Generate predictions for all test_X data based on the selected model
+    y_pred = generate_plot_predictions(model_name)
+    
     # Extracting features for the plot using the provided feature names
-
-
-    feature_1_values = test_X[feature_1_name]
-    feature_2_values = test_X[feature_2_name]
+    feature_1_values = unscaled_test_X[feature_1_name]  # Make sure to use unscaled_test_X for actual feature values
+    feature_2_values = unscaled_test_X[feature_2_name]
     
     # Create a 3D scatter plot
     fig = go.Figure(data=[go.Scatter3d(
@@ -97,7 +89,7 @@ def create_tea_catechins_plot(feature_1_name, feature_2_name, model_name, y_pred
         mode='markers',
         marker=dict(
             size=5,
-            color=y_pred,  # color points by predicted values
+            color=y_pred,  # Color points by predicted values
             colorscale='Plasma',  # Color scale
             opacity=0.6
         )
@@ -114,7 +106,7 @@ def create_tea_catechins_plot(feature_1_name, feature_2_name, model_name, y_pred
             yaxis=dict(backgroundcolor="rgb(200, 200, 200)", color='white'),
             zaxis=dict(backgroundcolor="rgb(200, 200, 200)", color='white')
         ),
-        template="plotly_dark"  # Use dark theme for the plot
+        template="plotly_dark"  
     )
 
     return fig

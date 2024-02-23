@@ -33,7 +33,7 @@ def projects():
 def tea_catechins():
 
     # Plot Related 
-    plot = create_tea_catechins_plot('Catechin', 'Caffeine', 'Random Forest') # Default 
+    plot = create_tea_catechins_plot() 
     plot_div = plotly.offline.plot(plot, output_type='div', include_plotlyjs=False)
     load_tea_catechin_models() # Lazy loading, models aren't loaded until you visit this exact page to avoid website lag
 
