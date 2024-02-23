@@ -125,9 +125,9 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
 def predict(model, features):
     global Model_RF_session, Model_MLP_session, Model_RNN_session, Chemical_Scaler_session, Sensory_Scaler_session
     
-    # Scale features
-    scaled_features = scale(features, Chemical_Scaler_session)
-    
+    # Ensure features are in float32
+    features_array = np.array(features, dtype=np.float32).reshape(-1, 9)  # Assuming 9 features per input
+
     # Select the appropriate model session
     model_session = {
         'Random Forest': Model_RF_session,
@@ -141,17 +141,17 @@ def predict(model, features):
     input_name = model_session.get_inputs()[0].name
     output_name = model_session.get_outputs()[0].name
     
-    # For RNN, ensure the input is reshaped appropriately
+    # Adjust for RNN model if necessary
     if model == 'Recurrent Neural Network':
-        scaled_features = scaled_features.reshape(1, 2000, 9) # Middle is sequence length
-    
+        # Ensure the shape is correct for RNN; adjust based on your model's requirements
+        features_array = features_array.reshape(1, -1, 9)  # Adjust as per your model's expected input shape
+
     # Perform prediction
-    prediction = model_session.run([output_name], {input_name: scaled_features.astype(np.float32)})[0]
+    prediction = model_session.run([output_name], {input_name: features_array})[0]
     
-    # Inverse scale the prediction if necessary
-    original_scale_prediction = inverse_scale(prediction, Sensory_Scaler_session)
-    
-    return original_scale_prediction 
+    # Process and return the prediction as needed
+    return prediction
+
 
 def scale(features, scaler_session=Chemical_Scaler_session):
     input_name = scaler_session.get_inputs()[0].name
@@ -166,6 +166,19 @@ def inverse_scale(predictions, scaler_session=Sensory_Scaler_session):
     output_name = scaler_session.get_outputs()[0].name
     original_scale_predictions = scaler_session.run([output_name], {input_name: predictions.astype(np.float32)})[0]
     return original_scale_predictions
+
+def prepare_rnn_input(features, target_sequence_length=2000, num_features=9):
+    # Assuming `features` is a list or 1D numpy array of your input features
+    # Initialize a padded array with zeros
+    padded_input = np.zeros((target_sequence_length, num_features), dtype=np.float32)
+    
+    # Fill in the real features up to the length of your actual data
+    sequence_length = min(len(features), target_sequence_length)
+    padded_input[:sequence_length, :] = features[:sequence_length, :]
+    
+    # Reshape for ONNX (batch_size, sequence_length, num_features)
+    # Assuming a batch size of 1 for individual predictions
+    return padded_input.reshape(1, target_sequence_length, num_features)
 
 
 # Notes:
