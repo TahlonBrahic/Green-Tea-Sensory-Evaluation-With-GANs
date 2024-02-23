@@ -4,7 +4,7 @@
 <section id="Project-Cards" class="min-h-screen flex items-center justify-center bg-gray-600 text-gray-200 px-4">
     <div class="container">
         <div class="row">
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="sm:block col-lg-4 col-md-6 col-sm-12 mb-4 relative">
                 <div class="card h-100 text-white bg-dark">
                     <img src="{{ url_for('static', filename='green_tea.jpg') }}" class="card-img-top" alt="...">
                     <div class="card-body d-flex flex-column">
@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                <div class="card h-100 text-white bg-dark">
+                <div class="card sm:block h-100 text-white bg-dark">
                     <img src="{{ url_for('static', filename='chess.jpg') }}" class="card-img-top" alt="...">
                     <div class="card-body d-flex flex-column">
                         <p class="card-text">Can I create a chess bot that plays like anyone else?</p>
@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                <div class="card h-100 text-white bg-dark">
+                <div class="card sm:block h-100 text-white bg-dark">
                     <img src="{{ url_for('static', filename='laptop.jpg') }}" class="card-img-top" alt="...">
                     <div class="card-body d-flex flex-column">
                         <p class="card-text">Firmware hotfixes for Galaxy Book3 Pro 360 using Arch Linux</p>
