@@ -59,6 +59,10 @@ def tea_catechins():
         # Have to add or it errors out
         if isinstance(prediction, np.ndarray):
             prediction = prediction.tolist()
+        
+        if model_choice == 'Recurrent Neural Network': 
+            prediction_value = prediction[-1][0]
+            return jsonify({'prediction': prediction_value})
 
         return jsonify({'prediction': prediction})
 
