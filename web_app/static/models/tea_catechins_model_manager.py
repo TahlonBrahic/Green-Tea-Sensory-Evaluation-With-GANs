@@ -9,6 +9,7 @@ Model_RF_session, Model_MLP_session, Model_RNN_session = None, None, None
 Chemical_Scaler_session, Sensory_Scaler_session = None, None
 test_X, unscaled_test_X = None, None
 test_y, unscaled_test_y = None, None
+y_pred_rf, y_pred_mlp, y_pred_rnn = None, None, None
 
 def load_tea_catechin_models():
     """
@@ -23,6 +24,7 @@ def load_tea_catechin_models():
     global Chemical_Scaler_session, Sensory_Scaler_session
     global test_X, unscaled_test_X
     global test_y, unscaled_test_y
+    global y_pred_rf, y_pred_mlp, y_pred_rnn
 
     base_dir = os.path.join(os.path.dirname(__file__), '../../../source/')
 
@@ -39,11 +41,20 @@ def load_tea_catechin_models():
         unscaled_test_X = pd.read_csv(os.path.join(base_dir, "unscaled_test_X.csv"))
         test_y = pd.read_csv(os.path.join(base_dir, "test_y.csv"))
         unscaled_test_y = pd.read_csv(os.path.join(base_dir, "unscaled_test_y.csv"))
+
+        # Load model predictions 
+        y_pred_rf = np.load(os.path.join(base_dir, 'y_pred_rf.npy'))
+        y_pred_mlp = np.load(os.path.join(base_dir, 'y_pred_mlp.npy'))
+        y_pred_rnn = np.load(os.path.join(base_dir, 'y_pred_rnn.npy'))
+
     except Exception as e:
         print(f"Error loading models or data: {e}")
 
 # Prediction
-def predict(model, features): 
+def predict(model, features):
+
+    load_tea_catechin_models()
+
     features_array = np.array(features, dtype=np.float32).reshape(1, -1)
     model_session = {'Random Forest': Model_RF_session, 
                      'Multilayer Perceptron': Model_MLP_session, 
@@ -89,17 +100,24 @@ def predict(model, features):
         print(f"Error making prediction for {model}: {e}")
         return None
 
-
-
 # Interactive Plot
 def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffeine', model_name='Random Forest'):
-    global test_X
-    
-    # Generate predictions for all test_X data based on the selected model
-    y_pred = generate_plot_predictions(model_name)
-    
+    global unscaled_test_X, y_pred_rf, y_pred_mlp, y_pred_rnn
+
+    load_tea_catechin_models()
+
+    # Choose prediction data based on the selected model
+    if model_name == 'Random Forest':
+        y_pred = y_pred_rf
+    elif model_name == 'Multilayer Perceptron':
+        y_pred = y_pred_mlp
+    elif model_name == 'Recurrent Neural Network':
+        y_pred = y_pred_rnn
+    else:
+        raise ValueError("Invalid model name")
+  
     # Extracting features for the plot using the provided feature names
-    feature_1_values = unscaled_test_X[feature_1_name]  # Make sure to use unscaled_test_X for actual feature values
+    feature_1_values = unscaled_test_X[feature_1_name]  
     feature_2_values = unscaled_test_X[feature_2_name]
     
     # Create a 3D scatter plot
@@ -128,58 +146,7 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
         ),
         template="plotly_dark"  
     )
-    return fig
-
-def get_model_predictions(scaler_session, model_session, test_data):
-    features = test_data.to_numpy(dtype=np.float32)
-    
-    # Scale features
-    scaled_features = scale(features, scaler_session)
-    if scaled_features is None:
-        return None
-
-    try:
-        # Check if the model session corresponds to the RNN model
-        if model_session == Model_RNN_session:
-            # Correctly prepare the RNN input
-            rnn_input = prepare_rnn_input(scaled_features, target_sequence_length=2000, num_features=scaled_features.shape[-1])
-            input_name = model_session.get_inputs()[0].name
-            output_name = model_session.get_outputs()[0].name
-            # Use rnn_input instead of scaled_features for RNN predictions
-            predictions = model_session.run([output_name], {input_name: rnn_input})[0]
-        else:
-            # For non-RNN models, proceed as before
-            input_name = model_session.get_inputs()[0].name
-            output_name = model_session.get_outputs()[0].name
-            predictions = model_session.run([output_name], {input_name: scaled_features})[0]
-        
-        # Inverse scale predictions
-        original_scale_predictions = inverse_scale(predictions, Sensory_Scaler_session)
-        return original_scale_predictions.flatten() if original_scale_predictions is not None else None
-    except Exception as e:
-        print(f"Error getting model predictions: {e}")
-        return None
-
-
-def generate_plot_predictions(model_name):
-    global Chemical_Scaler_session, Model_RF_session, Model_MLP_session, Model_RNN_session, test_X
-    
-    # Load models if not already done
-    load_tea_catechin_models()
-    
-    model_session = {
-        'Random Forest': Model_RF_session,
-        'Multilayer Perceptron': Model_MLP_session,
-        'Recurrent Neural Network': Model_RNN_session
-    }.get(model_name, None)
-    
-    if model_session is None:
-        raise ValueError("Model not found")
-    
-    # Generate predictions for all test_X data
-    y_pred = get_model_predictions(Chemical_Scaler_session, model_session, test_X)
-    
-    return y_pred   
+    return fig 
 
 # Utility Functions
 def scale(features, scaler_session):
@@ -187,7 +154,9 @@ def scale(features, scaler_session):
         input_name = scaler_session.get_inputs()[0].name
         output_name = scaler_session.get_outputs()[0].name
         features_array = np.array(features).astype(np.float32).reshape(-1, 9)
+        print(f"Min feature value: {np.min(features_array)}, Max feature value: {np.max(features_array)}")
         scaled_features = scaler_session.run([output_name], {input_name: features_array})[0]
+        print(f"Min scaled feature value: {np.min(scaled_features)}, Max scaled feature value: {np.max(scaled_features)}")
         return scaled_features
     except Exception as e:
         print(f"Error scaling features: {e}")
@@ -210,3 +179,8 @@ def prepare_rnn_input(features, target_sequence_length=2000, num_features=9):
     sequence_length = min(features.shape[0], target_sequence_length)
     padded_input[:sequence_length, :] = features[:sequence_length, :]
     return padded_input.reshape(1, target_sequence_length, num_features)
+
+# Example inputs
+# .25, .22, .06, .05, .17, .17, .05, .04, .11
+# Example output
+# .86

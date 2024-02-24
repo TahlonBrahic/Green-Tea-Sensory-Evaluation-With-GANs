@@ -1,6 +1,7 @@
 # fix scaling issue after model creation and training
 
 # add blurb on model page that talks about what inputs it expects and how to use and interact, maybe tooltips, talk about input in mg / the chinese standard idk hwo to implement that
+        # GB/T 8313-2018 - Paper that mentions the Determination of total polyphenols and catechins content in tea 
 
 # double check and make sure model is trained well and giving good outputs everytime
 
