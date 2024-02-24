@@ -1,5 +1,7 @@
-Flask==3.0.1
+Flask==3.0.2
 gunicorn==21.2.0
 plotly==5.19.0
-boto3==1.19.0
-onnxruntime==1.17
+botocore==1.31.85
+onnx==1.15.0
+pandas==2.2.0
+numpy==1.26.4
