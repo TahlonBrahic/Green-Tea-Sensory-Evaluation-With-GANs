@@ -11,7 +11,7 @@ models_path = os.path.abspath(os.path.join(APP_ROOT_PATH, '../static/models'))
 if models_path not in sys.path:
     sys.path.append(models_path)
 
-from tea_catechins_model_manager import * # I know this isn't the best but the variables are so specific the namespace is clear
+from tea_catechins_model_manager import * # Not optimal but the variables are so specific the namespace is clear
 
 app = Flask(__name__, template_folder=TEMPLATE_DIR, static_folder=STATIC_DIR)
 
@@ -60,8 +60,8 @@ def tea_catechins():
         
             return jsonify({'prediction': prediction})
 
-    # For GET requests, serve the project page
-    return render_template('tea_catechins.html', plot_div=plot_div)  # Assuming you have a template for this page
+    # For GET requests (e.g. page loading) serve the project page
+    return render_template('tea_catechins.html', plot_div=plot_div)
 
 
 if __name__ == '__main__':

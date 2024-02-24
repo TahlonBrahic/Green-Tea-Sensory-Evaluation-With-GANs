@@ -3,3 +3,60 @@
 # add blurb on model page that talks about what inputs it expects and how to use and interact
 
 # add / edit comments on all 
+
+# do readme/ project overview page
+
+# export app.py, main.ipynb, and tea_catechins.ipynb to Complete Project PDF
+
+# Record Video
+
+# Edit Video and render
+
+# Upload documents to google drive
+
+# Turn in (check all turn in locations, I think I also have to send an email)
+
+
+# Grading Rubric Below:
+
+Project Submission Rubric- Machine Learning Project 
+
+
+5
+4
+3
+2
+0
+
+Project Overview and Data Acquisition, Analysis, and Preparation
+Comprehensive project. Data acquired from a relevant source, thoroughly analyzed and prepared effectively for modeling. All actions are well justified.
+Adequate project overview with data acquired, analyzed, and prepared effectively, but with minor issues or gaps in rationale.
+Brief project overview with data acquired and partially analyzed or prepared, with notable issues. Justifications for some actions are missing or weak.
+Incomplete project overview with data acquired but with significant issues in the analysis or preparation, or a lack of justification for key actions.
+Project overview is missing or incomplete, data acquisition, analysis, and preparation are not performed
+
+Model Training and Evaluation
+Models are trained and evaluated using appropriate techniques, with clear explanations of decisions made. Performance is interpreted accurately with relevant metrics.
+Models are trained and evaluated with minor issues or gaps in rationale. Interpretation of performance is generally accurate.
+Models are trained and evaluated but with some notable issues or gaps. Interpretation of performance has some inaccuracies or omissions.
+Models are trained and evaluated but with significant issues or missing elements. Interpretation of performance is largely lacking or incorrect.
+Models are not trained or evaluated
+
+User Interface Integration
+User interface is effectively integrated, allowing practical application of the model. The interface is intuitive, user-friendly, and supports the objectives of the model.
+User interface is integrated and generally supports the model, but has minor usability issues.
+User interface is integrated but has some usability issues or does not fully support the model.
+User interface is integrated but has significant usability issues, or does not effectively support the model.
+User interface is not integrated
+
+Presentation
+Complete, coherent, and professional presentation.
+Sufficient presentation but lacks details, preparedness, or clarity.
+Substantial lack of clarity, details, or preparedness.
+Unprofessional presentation
+No presentation submitted
+
+
+A combined score of 15 is required to pass
+
+
