@@ -3,10 +3,12 @@ import os
 import sys
 import plotly
 
+# Define application's root directory path.
 APP_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DIR = os.path.join(APP_ROOT_PATH, '../templates')
 STATIC_DIR = os.path.join(APP_ROOT_PATH, '../static')
 
+# Ensure the `models_path` is added to Python's module search path (`sys.path`) if it's not already present.
 models_path = os.path.abspath(os.path.join(APP_ROOT_PATH, '../static/models'))
 if models_path not in sys.path:
     sys.path.append(models_path)
@@ -25,7 +27,7 @@ def home():
 def resume():
     return render_template('resume.html')
 
-@app.route('/projects')
+@app.route('/projects')s
 def projects():
     return render_template('projects.html')
 
@@ -54,7 +56,7 @@ def tea_catechins():
 
         prediction = predict(model_choice, features)
 
-        # Have to add or it errors out
+        # Have to add or it errors out - https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable
         if isinstance(prediction, np.ndarray):
             prediction = prediction.tolist()
         

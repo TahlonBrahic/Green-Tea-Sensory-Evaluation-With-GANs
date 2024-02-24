@@ -1,79 +1,49 @@
+import os  # Standard library imports
+import numpy as np  # Third-party imports
+import pandas as pd
 import onnxruntime as ort
 import plotly.graph_objs as go
-import numpy as np
-import pandas as pd
-import os
 
-# Initialization
-Model_RF_session, Model_MLP_session, Model_RNN_session, Chemical_Scaler_session, Sensory_Scaler_session = None, None, None, None, None
+# Initialization of global variables to None. These will be set by `load_tea_catechin_models`.
+Model_RF_session, Model_MLP_session, Model_RNN_session = None, None, None
+Chemical_Scaler_session, Sensory_Scaler_session = None, None
 test_X, unscaled_test_X = None, None
-test_y, unscaled_test_y = None, None  
+test_y, unscaled_test_y = None, None
 
 def load_tea_catechin_models():
+    """
+    Loads the ONNX models for Random Forest, MLP, RNN, and scalers for chemical and sensory data.
+    Additionally, loads test datasets and their unscaled versions for evaluation purposes.
+    Sets global variables for each model and dataset for use throughout the application.
+    
+    Raises:
+        Exception: If there is an issue loading the models or datasets, an error message is printed.
+    """
     global Model_RF_session, Model_MLP_session, Model_RNN_session
     global Chemical_Scaler_session, Sensory_Scaler_session
     global test_X, unscaled_test_X
-    global test_y, unscaled_test_y  
+    global test_y, unscaled_test_y
 
     base_dir = os.path.join(os.path.dirname(__file__), '../../../source/')
 
     try:
-        Model_RF_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RF.onnx'))      
-        Model_MLP_session = ort.InferenceSession(os.path.join(base_dir, 'Model_MLP.onnx'))      
+        # Load ONNX models for tea catechin prediction and associated scalers
+        Model_RF_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RF.onnx'))
+        Model_MLP_session = ort.InferenceSession(os.path.join(base_dir, 'Model_MLP.onnx'))
         Model_RNN_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RNN.onnx'))
         Chemical_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "chemical_scaler.onnx"))
         Sensory_Scaler_session = ort.InferenceSession(os.path.join(base_dir, "sensory_scaler.onnx"))
+
+        # Load test datasets and their unscaled versions
         test_X = pd.read_csv(os.path.join(base_dir, "test_X.csv"))
         unscaled_test_X = pd.read_csv(os.path.join(base_dir, "unscaled_test_X.csv"))
         test_y = pd.read_csv(os.path.join(base_dir, "test_y.csv"))
         unscaled_test_y = pd.read_csv(os.path.join(base_dir, "unscaled_test_y.csv"))
     except Exception as e:
         print(f"Error loading models or data: {e}")
-
-   
+        
 # Prediction
-
-def get_model_predictions(scaler_session, model_session, test_data):
-    features = test_data.to_numpy(dtype=np.float32)
-    scaled_features = scale(features, scaler_session)
-    if scaled_features is None:
-        return None
-
-    try:
-        if model_session == Model_RNN_session:
-            scaled_features = scaled_features.reshape(scaled_features.shape[0], 1, scaled_features.shape[1])
-        
-        input_name = model_session.get_inputs()[0].name
-        output_name = model_session.get_outputs()[0].name
-        predictions = model_session.run([output_name], {input_name: scaled_features})[0]
-        
-        original_scale_predictions = inverse_scale(predictions, Sensory_Scaler_session)
-        return original_scale_predictions.flatten() if original_scale_predictions is not None else None
-    except Exception as e:
-        print(f"Error getting model predictions: {e}")
-        return None
-
-def generate_plot_predictions(model_name):
-    global Chemical_Scaler_session, Model_RF_session, Model_MLP_session, Model_RNN_session, test_X
-    
-    # Load models if not already done
-    load_tea_catechin_models()
-    
-    model_session = {
-        'Random Forest': Model_RF_session,
-        'Multilayer Perceptron': Model_MLP_session,
-        'Recurrent Neural Network': Model_RNN_session
-    }.get(model_name, None)
-    
-    if model_session is None:
-        raise ValueError("Model not found")
-    
-    # Generate predictions for all test_X data
-    y_pred = get_model_predictions(Chemical_Scaler_session, model_session, test_X)
-    
-    return y_pred    
-
-def predict(model, features):
+def predict(model, features): 
     features_array = np.array(features, dtype=np.float32).reshape(1, -1)
     model_session = {'Random Forest': Model_RF_session, 
                      'Multilayer Perceptron': Model_MLP_session, 
@@ -82,19 +52,34 @@ def predict(model, features):
     if model_session is None:
         print("Error: Model not found")
         return None
+    
+    # Scale the input
+    try:
+        scaled_features = scale(features_array, Chemical_Scaler_session)
+        if scaled_features is None:
+            print("Error: Could not scale features")
+            return None
+        
+    except Exception as e:
+        print(f"Error scaling features for {model}: {e}")
+        return None
 
     try:
         input_name = model_session.get_inputs()[0].name
         output_name = model_session.get_outputs()[0].name
         
+        # Correctly using scaled_features for prediction
         if model == 'Recurrent Neural Network':
-            features_array = prepare_rnn_input(features_array)
-            prediction = model_session.run([output_name], {input_name: features_array})[0]
-            prediction = prediction.flatten()[-1]
+            # Make sure to use scaled_features for RNN input preparation
+            rnn_input = prepare_rnn_input(scaled_features)
+            prediction = model_session.run([output_name], {input_name: rnn_input})[0]
         else:
-            prediction = model_session.run([output_name], {input_name: features_array})[0]
-            prediction = prediction.flatten()
-        
+            prediction = model_session.run([output_name], {input_name: scaled_features})[0]
+
+        if prediction.ndim == 1:
+            prediction = prediction.reshape(-1, 1)
+    
+        # Inverse scale the prediction
         prediction = np.array(prediction, dtype=np.float32)
         prediction = inverse_scale(prediction, Sensory_Scaler_session)
         
@@ -105,8 +90,8 @@ def predict(model, features):
         return None
 
 
-# Interactive Plot
 
+# Interactive Plot
 def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffeine', model_name='Random Forest'):
     global test_X
     
@@ -145,8 +130,46 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
     )
     return fig
 
-# Utility Functions
+def get_model_predictions(scaler_session, model_session, test_data):
+    features = test_data.to_numpy(dtype=np.float32)
+    
+    scaled_features = scale(features, scaler_session)
+    if scaled_features is None:
+        return None
 
+    try:
+        if model_session == Model_RNN_session:
+            scaled_features = scaled_features.reshape(scaled_features.shape[0], 1, scaled_features.shape[1])       
+        input_name = model_session.get_inputs()[0].name
+        output_name = model_session.get_outputs()[0].name
+        predictions = model_session.run([output_name], {input_name: scaled_features})[0]      
+        original_scale_predictions = inverse_scale(predictions, Sensory_Scaler_session)
+        return original_scale_predictions.flatten() if original_scale_predictions is not None else None
+    except Exception as e:
+        print(f"Error getting model predictions: {e}")
+        return None
+
+def generate_plot_predictions(model_name):
+    global Chemical_Scaler_session, Model_RF_session, Model_MLP_session, Model_RNN_session, test_X
+    
+    # Load models if not already done
+    load_tea_catechin_models()
+    
+    model_session = {
+        'Random Forest': Model_RF_session,
+        'Multilayer Perceptron': Model_MLP_session,
+        'Recurrent Neural Network': Model_RNN_session
+    }.get(model_name, None)
+    
+    if model_session is None:
+        raise ValueError("Model not found")
+    
+    # Generate predictions for all test_X data
+    y_pred = get_model_predictions(Chemical_Scaler_session, model_session, test_X)
+    
+    return y_pred   
+
+# Utility Functions
 def scale(features, scaler_session):
     try:
         input_name = scaler_session.get_inputs()[0].name
