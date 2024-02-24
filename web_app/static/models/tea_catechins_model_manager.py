@@ -51,9 +51,7 @@ def load_tea_catechin_models():
         print(f"Error loading models or data: {e}")
 
 # Prediction
-def predict(model, features):
-
-    load_tea_catechin_models()
+def predict(model, features):    
 
     features_array = np.array(features, dtype=np.float32).reshape(1, -1)
     model_session = {'Random Forest': Model_RF_session, 
@@ -101,6 +99,9 @@ def predict(model, features):
         return None
 
 # Interactive Plot
+import numpy as np
+import plotly.graph_objs as go
+
 def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffeine', model_name='Random Forest'):
     global unscaled_test_X, y_pred_rf, y_pred_mlp, y_pred_rnn
 
@@ -117,9 +118,23 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
         raise ValueError("Invalid model name")
   
     # Extracting features for the plot using the provided feature names
-    feature_1_values = unscaled_test_X[feature_1_name]  
-    feature_2_values = unscaled_test_X[feature_2_name]
+    feature_1_values = unscaled_test_X[feature_1_name].values
+    feature_2_values = unscaled_test_X[feature_2_name].values
     
+    # Flatten y_pred to ensure it's one-dimensional
+    y_pred = y_pred.flatten()
+
+    # Debugging: Check shapes of the arrays after flattening y_pred
+    print(f"Shapes - feature_1: {feature_1_values.shape}, feature_2: {feature_2_values.shape}, y_pred: {y_pred.shape}")
+    if not (len(feature_1_values) == len(feature_2_values) == len(y_pred)):
+        raise ValueError("Data length mismatch after flattening!")
+
+    # Cleaning NaN or infinite values in y_pred
+    y_pred = np.nan_to_num(y_pred, nan=0.0, posinf=0.0, neginf=0.0)
+
+    # Debugging: Print sample values to ensure data is as expected
+    print(f"Sample y_pred values: {y_pred[:5]}")
+
     # Create a 3D scatter plot
     fig = go.Figure(data=[go.Scatter3d(
         x=feature_1_values,
@@ -129,7 +144,7 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
         marker=dict(
             size=5,
             color=y_pred,  
-            colorscale='Plasma', 
+            colorscale='Plasma',
         )
     )])
 
@@ -144,9 +159,11 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
             yaxis=dict(backgroundcolor="rgb(200, 200, 200)", color='white'),
             zaxis=dict(backgroundcolor="rgb(200, 200, 200)", color='white')
         ),
-        template="plotly_dark"  
+        template="plotly_dark"
     )
-    return fig 
+
+    return fig
+
 
 # Utility Functions
 def scale(features, scaler_session):

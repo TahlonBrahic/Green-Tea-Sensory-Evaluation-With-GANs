@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import os
 import sys
 import plotly
+import json
 
 # Define application's root directory path.
 APP_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -33,44 +34,48 @@ def projects():
 
 @app.route('/projects/tea-catechins', methods=['GET', 'POST']) 
 def tea_catechins():
-
-    # Plot Related 
-    plot = create_tea_catechins_plot() 
-    plot_div = plotly.offline.plot(plot, output_type='div', include_plotlyjs=False)
-    load_tea_catechin_models() # Lazy loading, models aren't loaded until you visit this exact page to avoid website lag
-
-    # Model Selection Releated
     model_names = ['Random Forest', 'Multilayer Perceptron', 'Recurrent Neural Network']
-
+    model_choice = 'Random Forest'  # Default model choice
+    
     if request.method == 'POST':
+        try:
+            data = request.json
+            model_choice = data.get('model_choice', 'Random Forest')
 
-        data = request.json
+            # Extract features from the request, with error handling for missing data
+            features_keys = [
+                'Catechin', 'Epicatechin', 'Gallocatechin', 'Epigallocatechin',
+                'Catechin_Gallate', 'Epicatechin_Gallate', 'Gallocatechin_Gallate',
+                'Epigallocatechin_Gallate', 'Caffeine'
+            ]
+            features = [data.get(key, 0) for key in features_keys]  # Default to 0 for missing keys
 
-        model_choice = data.get('model_choice') 
-
-        # Extract features from the request
-        features_keys = ['Catechin', 'Epicatechin', 'Gallocatechin', 'Epigallocatechin',
-                 'Catechin_Gallate', 'Epicatechin_Gallate', 'Gallocatechin_Gallate',
-                 'Epigallocatechin_Gallate', 'Caffeine']
-        features = [data.get(key) for key in features_keys]
-
-        prediction = predict(model_choice, features)
-
-        # Have to add or it errors out - https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable
-        if isinstance(prediction, np.ndarray):
-            prediction = prediction.tolist()
-        
+            prediction = predict(model_choice, features)
+            if isinstance(prediction, np.ndarray):
+                prediction = prediction.tolist()
+            
             return jsonify({'prediction': prediction})
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
 
-    # For GET requests (e.g. page loading) serve the project page
-    return render_template('tea_catechins.html', plot_div=plot_div)
+    # For GET requests or if POST fails, generate and return the default plot
+    try:
+        plot = create_tea_catechins_plot(model_name=model_choice)
+        plot_div = plotly.offline.plot(plot, output_type='div', include_plotlyjs=True)
+    except Exception as e:
+        return f"Error generating plot: {str(e)}", 500
+
+    return render_template('tea_catechins.html', plot_div=plot_div, model_names=model_names)
 
 @app.route('/get-new-graph-data', methods=['GET'])
 def get_new_graph_data():
-    model_choice = request.args.get('model_choice')
-    plot = create_tea_catechins_plot(model_name=model_choice)
-    plot_json = plot.to_json()
-    return plot_json
+    try:
+        model_choice = request.args.get('model_choice', 'Random Forest')
+        plot = create_tea_catechins_plot(model_name=model_choice)
+        plot_json = plot.to_json()
+        return plot_json
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
