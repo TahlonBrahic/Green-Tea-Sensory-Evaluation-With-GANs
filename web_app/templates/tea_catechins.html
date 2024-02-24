@@ -55,10 +55,11 @@
 </section>
 
 <script>
+  // Form input and Model Prediction
   document
     .getElementById("modelInputForm")
     .addEventListener("submit", async function (e) {
-      e.preventDefault(); // This prevents a default form submission (all blank currentyly)
+      e.preventDefault(); // This prevents a default form submission (all blank currently)
 
       const formData = new FormData(e.target);
       let formProps = Object.fromEntries(formData);
@@ -97,6 +98,31 @@
       // Reset the form to allow resubmission with the same data
       document.getElementById("modelInputForm").reset();
     });
+
+  // Update Graph
+  document.getElementById("modelChoice").addEventListener("change", function() {
+  var modelChoice = this.value;
+  
+  axios.get('/get-new-graph-data', {
+    params: {
+      model_choice: modelChoice
+    }
+  })
+  .then(function(response) {
+    var newGraphData = response.data;
+    var plotDiv = document.getElementById('plot');
+    
+    // Purge the plot container to completely clear it
+    Plotly.purge(plotDiv);
+    
+    // Use Plotly.react to efficiently update the plot
+    Plotly.react('plot', newGraphData.data, newGraphData.layout);
+  })
+  .catch(function(error) {
+    console.log(error);
+  });
+});
+
 </script>
 
 {% endblock %}

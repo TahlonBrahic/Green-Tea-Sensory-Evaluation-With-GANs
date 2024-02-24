@@ -41,7 +41,7 @@ def load_tea_catechin_models():
         unscaled_test_y = pd.read_csv(os.path.join(base_dir, "unscaled_test_y.csv"))
     except Exception as e:
         print(f"Error loading models or data: {e}")
-        
+
 # Prediction
 def predict(model, features): 
     features_array = np.array(features, dtype=np.float32).reshape(1, -1)
@@ -133,21 +133,33 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
 def get_model_predictions(scaler_session, model_session, test_data):
     features = test_data.to_numpy(dtype=np.float32)
     
+    # Scale features
     scaled_features = scale(features, scaler_session)
     if scaled_features is None:
         return None
 
     try:
+        # Check if the model session corresponds to the RNN model
         if model_session == Model_RNN_session:
-            scaled_features = scaled_features.reshape(scaled_features.shape[0], 1, scaled_features.shape[1])       
-        input_name = model_session.get_inputs()[0].name
-        output_name = model_session.get_outputs()[0].name
-        predictions = model_session.run([output_name], {input_name: scaled_features})[0]      
+            # Correctly prepare the RNN input
+            rnn_input = prepare_rnn_input(scaled_features, target_sequence_length=2000, num_features=scaled_features.shape[-1])
+            input_name = model_session.get_inputs()[0].name
+            output_name = model_session.get_outputs()[0].name
+            # Use rnn_input instead of scaled_features for RNN predictions
+            predictions = model_session.run([output_name], {input_name: rnn_input})[0]
+        else:
+            # For non-RNN models, proceed as before
+            input_name = model_session.get_inputs()[0].name
+            output_name = model_session.get_outputs()[0].name
+            predictions = model_session.run([output_name], {input_name: scaled_features})[0]
+        
+        # Inverse scale predictions
         original_scale_predictions = inverse_scale(predictions, Sensory_Scaler_session)
         return original_scale_predictions.flatten() if original_scale_predictions is not None else None
     except Exception as e:
         print(f"Error getting model predictions: {e}")
         return None
+
 
 def generate_plot_predictions(model_name):
     global Chemical_Scaler_session, Model_RF_session, Model_MLP_session, Model_RNN_session, test_X
@@ -192,6 +204,8 @@ def inverse_scale(predictions, scaler_session):
         return None
 
 def prepare_rnn_input(features, target_sequence_length=2000, num_features=9):
+    if features.ndim == 1:
+        features = features.reshape(-1, num_features)
     padded_input = np.zeros((target_sequence_length, num_features), dtype=np.float32)
     sequence_length = min(features.shape[0], target_sequence_length)
     padded_input[:sequence_length, :] = features[:sequence_length, :]

@@ -27,7 +27,7 @@ def home():
 def resume():
     return render_template('resume.html')
 
-@app.route('/projects')s
+@app.route('/projects')
 def projects():
     return render_template('projects.html')
 
@@ -65,6 +65,12 @@ def tea_catechins():
     # For GET requests (e.g. page loading) serve the project page
     return render_template('tea_catechins.html', plot_div=plot_div)
 
+@app.route('/get-new-graph-data', methods=['GET'])
+def get_new_graph_data():
+    model_choice = request.args.get('model_choice')
+    plot = create_tea_catechins_plot(model_name=model_choice)
+    plot_json = plot.to_json()
+    return plot_json
 
 if __name__ == '__main__':
     app.run(debug=True)
