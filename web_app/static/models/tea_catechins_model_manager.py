@@ -125,9 +125,8 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
         mode='markers',
         marker=dict(
             size=5,
-            color=y_pred,  # Color points by predicted values
-            colorscale='Plasma',  # Color scale
-            opacity=0.6
+            color=y_pred,  
+            colorscale='Plasma', 
         )
     )])
 
@@ -174,12 +173,3 @@ def prepare_rnn_input(features, target_sequence_length=2000, num_features=9):
     sequence_length = min(features.shape[0], target_sequence_length)
     padded_input[:sequence_length, :] = features[:sequence_length, :]
     return padded_input.reshape(1, target_sequence_length, num_features)
-
-
-# Notes:
-# The model only knows scaled data.
-# Scale features coming in.
-# Inverse scale predictions coming out.
-
-if __name__ == '__main__': # Debugging
-    load_tea_catechin_models()
