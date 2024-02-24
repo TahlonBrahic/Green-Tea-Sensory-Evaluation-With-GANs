@@ -81,7 +81,7 @@ def predict(model, features):
             predictions = model_session.run([output_name], {input_name: scaled_features})[0]
 
         # Aggregate predictions 
-        if isinstance(predictions, list)
+        if isinstance(predictions, list):
             prediction = np.mean(predictions)
         else:
             prediction = predictions
