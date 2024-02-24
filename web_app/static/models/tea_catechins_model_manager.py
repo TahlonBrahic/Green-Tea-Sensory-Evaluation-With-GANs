@@ -143,8 +143,7 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
             zaxis=dict(backgroundcolor="rgb(200, 200, 200)", color='white')
         ),
         template="plotly_dark"  
-    )asdfafsdasdf
-
+    )
     return fig
 
 # Utility Functions
