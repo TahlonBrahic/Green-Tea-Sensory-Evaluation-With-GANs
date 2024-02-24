@@ -144,7 +144,6 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
         ),
         template="plotly_dark"  
     )
-
     return fig
 
 # Utility Functions

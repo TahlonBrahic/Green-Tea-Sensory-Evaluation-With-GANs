@@ -67,6 +67,7 @@
           </div>
           <div class="flex items-center">
             <button
+              id="notificationButton"
               type="button"
               class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
             >
@@ -92,8 +93,16 @@
       </div>
     </nav>
     <div>{% block content %} {% endblock %}</div>
-    <!--JavaScript -->
+    <!-- Custom Scripts -->
     <script defer>
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("notificationButton")
+          .addEventListener("click", function () {
+            alert("Notifications coming soon!");
+          });
+      });
+
       window.onload = () => {
         const text =
           `In addition to development and data science, I am also a musician.
@@ -139,18 +148,18 @@
         }
         typeWriterEffect(60);
 
-        const hiddenElements = document.querySelectorAll(".hidden");
+        const hiddenElements = document.querySelectorAll(".custom-hidden");
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
-                entry.target.classList.add("show");
+                entry.target.classList.add("custom-show");
               } else {
-                entry.target.classList.remove("show");
+                entry.target.classList.remove("custom-show");
               }
             });
           },
-          { threshold: 0, rootMargin: "50px 0px" }
+          { threshold: 0.1, rootMargin: "0px" }
         );
 
         hiddenElements.forEach((el) => {

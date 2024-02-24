@@ -1,90 +1,103 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <script src="https://cdn.jsdelivr.net/npm/onnxjs/dist/onnx.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-<section id="Model" class="min-h-screen flex justify-center bg-gray-600 text-gray-200 px-4">
-    <div class="max-w-4xl mx-auto text-left">
-        <h1 class="pt-16 md:pt-20 lg:pt-24 text-3xl md:text-4xl lg:text-5xl font-bold">
-            How Catechins & Caffeine Affect Perceived Sensory Appeal In Green Tea
-        </h1>
-        <div class="container mt-5">
-            <h2>
-                Interact with the Machine Learning Model
-            </h2>
-            <div class="mb-3">
-                <label for="modelChoice" class="form-label">Select Model</label>
-                <select class="form-control" id="modelChoice" name="model_choice">
-                    <option value="Random Forest">Random Forest</option>
-                    <option value="Multilayer Perceptron">Multilayer Perceptron</option>
-                    <option value="Recurrent Neural Network">Recurrent Neural Network</option>
-                </select>                
-            </div>
-            <div id="plot">{{ plot_div|safe }}</div>
-            <form id="modelInputForm">
-
-                {% set features = ['Catechin', 'Epicatechin', 'Gallocatechin', 'Epigallocatechin',
-                'Catechin_Gallate', 'Epicatechin_Gallate', 'Gallocatechin_Gallate',
-                'Epigallocatechin_Gallate', 'Caffeine'] %}
-
-                {% for feature in features %}
-                <div class="mb-3">
-                    <label for="inputFeature{{ loop.index }}" class="form-label">{{ feature }}</label>
-                    <input type="number" class="form-control" id="inputFeature{{ loop.index }}" name="{{ feature }}" step="any" required>
-                </div>
-                {% endfor %}
-
-                <button type="submit" class="btn btn-primary">Predict</button>
-            </form>
-            <div id="predictionResult" class="mt-3"></div>
+<section
+  id="Model"
+  class="min-h-screen flex justify-center bg-gray-600 text-gray-200 px-4"
+>
+  <div class="max-w-4xl mx-auto text-left">
+    <h1
+      class="pt-16 md:pt-20 lg:pt-24 text-3xl md:text-4xl lg:text-5xl font-bold"
+    >
+      How Catechins & Caffeine Affect Perceived Sensory Appeal In Green Tea
+    </h1>
+    <div class="container mt-5">
+      <h2>Interact with the Machine Learning Model</h2>
+      <div class="mb-3">
+        <label for="modelChoice" class="form-label">Select Model</label>
+        <select class="form-control" id="modelChoice" name="model_choice">
+          <option value="Random Forest">Random Forest</option>
+          <option value="Multilayer Perceptron">Multilayer Perceptron</option>
+          <option value="Recurrent Neural Network">
+            Recurrent Neural Network
+          </option>
+        </select>
+      </div>
+      <div id="plot">{{ plot_div|safe }}</div>
+      <form id="modelInputForm">
+        {% set features = ['Catechin', 'Epicatechin', 'Gallocatechin',
+        'Epigallocatechin', 'Catechin_Gallate', 'Epicatechin_Gallate',
+        'Gallocatechin_Gallate', 'Epigallocatechin_Gallate', 'Caffeine'] %} {%
+        for feature in features %}
+        <div class="mb-3">
+          <label for="inputFeature{{ loop.index }}" class="form-label"
+            >{{ feature }}</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            id="inputFeature{{ loop.index }}"
+            name="{{ feature }}"
+            step="any"
+            required
+          />
         </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Predict</button>
+      </form>
+      <div id="predictionResult" class="mt-3"></div>
     </div>
+  </div>
 </section>
 
 <script>
-    document.getElementById('modelInputForm').addEventListener('submit', async function(e) {
-        e.preventDefault(); // This prevents a default form submission (all blank)
-        
-        const formData = new FormData(e.target);
-        let formProps = Object.fromEntries(formData);
-        const modelChoice = document.getElementById('modelChoice').value;
-        formProps['model_choice'] = modelChoice; 
+  document
+    .getElementById("modelInputForm")
+    .addEventListener("submit", async function (e) {
+      e.preventDefault(); // This prevents a default form submission (all blank currentyly)
 
-        const jsonData = JSON.stringify(formProps);
-        
-        // Using axios to send a POST 
-        try { 
-            const response = await axios.post('/projects/tea-catechins', jsonData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            
-            // Extract prediction based on the selected model
-            let prediction;
-            if (modelChoice === 'Recurrent Neural Network') {
-                // For the RNN, take the first value in the prediction array
-                prediction = response.data.prediction[0];
-            } else {
-                // For other models, take the first value in the prediction array
-                prediction = response.data.prediction[0][0];
-            }
+      const formData = new FormData(e.target);
+      let formProps = Object.fromEntries(formData);
+      const modelChoice = document.getElementById("modelChoice").value;
+      formProps["model_choice"] = modelChoice;
 
-            // Display the model prediction
-            document.getElementById('predictionResult').innerText = 'Prediction: ' + prediction;
-        } catch (error) {
-            console.error('Error fetching predictions:', error);
-            document.getElementById('predictionResult').innerText = 'Error fetching predictions';
+      const jsonData = JSON.stringify(formProps);
+
+      // Using axios to send a POST
+      try {
+        const response = await axios.post("/projects/tea-catechins", jsonData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        // Extract prediction based on the selected model
+        let prediction;
+        if (modelChoice === "Recurrent Neural Network") {
+          // For the RNN, take the first value in the prediction array
+          prediction = response.data.prediction[0];
+        } else {
+          // For other models, take the first value in the prediction array
+          prediction = response.data.prediction[0][0];
         }
 
-        // Reset the form to allow resubmission with the same data
-        document.getElementById('modelInputForm').reset();
+        // Display the model prediction
+        document.getElementById("predictionResult").innerText =
+          "Prediction: " + prediction;
+      } catch (error) {
+        console.error("Error fetching predictions:", error);
+        document.getElementById("predictionResult").innerText =
+          "Error fetching predictions";
+      }
+
+      // Reset the form to allow resubmission with the same data
+      document.getElementById("modelInputForm").reset();
     });
 </script>
-
 
 {% endblock %}
 
