@@ -2,8 +2,6 @@
 
 # add blurb on model page that talks about what inputs it expects and how to use and interact, maybe tooltips, talk about input in mg / the chinese standard idk hwo to implement that
 
-# Make graph update with model selection change
-
 # double check and make sure model is trained well and giving good outputs everytime
 
 # add / edit comments on all 
