@@ -68,6 +68,7 @@
           </div>
           <div class="flex items-center">
             <button
+              id="notificationButton"
               type="button"
               class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
             >
@@ -95,6 +96,14 @@
     <div>{% block content %} {% endblock %}</div>
     <!--JavaScript -->
     <script defer>
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("notificationButton")
+          .addEventListener("click", function () {
+            alert("Notifications coming soon!");
+          });
+      });
+
       window.onload = () => {
         const text =
           `In addition to development and data science, I am also a musician.
