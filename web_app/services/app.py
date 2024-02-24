@@ -4,12 +4,12 @@ import sys
 import plotly
 import json
 
-# Define application's root directory path.
+# Define application's root directory path
 APP_ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_DIR = os.path.join(APP_ROOT_PATH, '../templates')
 STATIC_DIR = os.path.join(APP_ROOT_PATH, '../static')
 
-# Ensure the `models_path` is added to Python's module search path (`sys.path`) if it's not already present.
+# Add to Python's module search path 
 models_path = os.path.abspath(os.path.join(APP_ROOT_PATH, '../static/models'))
 if models_path not in sys.path:
     sys.path.append(models_path)

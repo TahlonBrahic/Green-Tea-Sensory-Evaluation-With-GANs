@@ -24,7 +24,7 @@ def load_tea_catechin_models():
     base_dir = os.path.join(os.path.dirname(__file__), '../../../source/')
 
     try:
-        # Load ONNX models for tea catechin prediction and associated scalers
+        # Load ONNX models 
         Model_RF_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RF.onnx'))
         Model_MLP_session = ort.InferenceSession(os.path.join(base_dir, 'Model_MLP.onnx'))
         Model_RNN_session = ort.InferenceSession(os.path.join(base_dir, 'Model_RNN.onnx'))
@@ -55,7 +55,6 @@ def load_tea_catechin_models():
 # Call the function to load the models and data
 load_tea_catechin_models()
 
-
 # Prediction
 def predict(model, features):   
 
@@ -75,25 +74,22 @@ def predict(model, features):
         output_name = model_session.get_outputs()[0].name
         print(f"Model input name: {input_name}, output name: {output_name}")
         
-        # Correctly using scaled_features for prediction
         if model == 'Recurrent Neural Network':
             rnn_input = prepare_rnn_input(scaled_features)
             predictions = model_session.run([output_name], {input_name: rnn_input})[0]
         else:
             predictions = model_session.run([output_name], {input_name: scaled_features})[0]
 
-        if isinstance(predictions, list):
-            # Aggregate predictions into a single value (e.g., mean)
+        # Aggregate predictions 
+        if isinstance(predictions, list)
             prediction = np.mean(predictions)
         else:
             prediction = predictions
 
-        # Ensure prediction is a single value
         if isinstance(prediction, np.ndarray) and prediction.ndim > 1:
-            # Take the mean if prediction is multidimensional
             prediction = np.mean(prediction)
 
-        # Inverse scale the prediction
+        # Inverse scale the prediction for human readability
         prediction = np.array(prediction, dtype=np.float32)
         prediction = inverse_scale(prediction)
 
@@ -118,14 +114,13 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
     elif model_name == 'Recurrent Neural Network':
         y_pred = y_pred_rnn
   
-    # Extracting features for the plot using the provided feature names
     feature_1_values = unscaled_test_X[feature_1_name].values
     feature_2_values = unscaled_test_X[feature_2_name].values
     
-    # Flatten y_pred to ensure it's one-dimensional
+    # Flatten y_pred 
     y_pred = y_pred.flatten()
 
-    # Cleaning NaN or infinite values in y_pred
+    # Remove NaN or infinite values in y_pred
     y_pred = np.nan_to_num(y_pred, nan=0.0, posinf=0.0, neginf=0.0)
 
     # Create a 3D scatter plot
@@ -141,7 +136,7 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
         )
     )])
 
-    # Update plot layout to use feature names in axis titles
+    # Update plot layout to use feature names in title
     fig.update_layout(
         title=f'3D Scatter Plot of Sensory Evaluation for {model_name}',
         scene=dict(
@@ -176,17 +171,15 @@ def inverse_scale(prediction):
         if sensory_data_min is None or sensory_data_max is None:
             raise ValueError("Scaling parameters are not initialized")
 
-        # Ensure prediction is in the expected shape and data type
         prediction_array = np.array(prediction, dtype=np.float32).reshape(1, -1)
 
-        # Perform inverse min-max scaling
+        # Perform inverse min-max scaling - custom implementation because ONNX does not provide
         original_scale_prediction = prediction_array * (sensory_data_max - sensory_data_min) + sensory_data_min
 
         return original_scale_prediction
     except Exception as e:
         print(f"Error inverse scaling predictions: {e}")
         return None
-
 
 def prepare_rnn_input(features, target_sequence_length=2000, num_features=9):
     if features.ndim == 1:
