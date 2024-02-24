@@ -18,9 +18,12 @@
       <h2>Interact with the Machine Learning Model</h2>
       <div class="bg-gray-800 text-white p-4 rounded-lg shadow my-3">
         <p>
-          Please input all data in milligrams (mg) as numerical values only. The
-          model will output an aggregated sensory evaluation score as a
-          prediction.
+          <p>
+            Please input all data in grams (g) as numerical values only. 
+            For example, 0.25, 0.12, 0.34, for all nine of the features. 
+            The model will output an aggregated sensory evaluation score as a prediction.
+        </p>
+        
         </p>
       </div>
       <div class="mb-3">
@@ -82,13 +85,11 @@
           },
         });
 
-        // Extract prediction based on the selected model
+        // Define the prediction out of returned list
         let prediction;
         if (modelChoice === "Recurrent Neural Network") {
-          // For the RNN, take the first value in the prediction array
           prediction = response.data.prediction[0];
         } else {
-          // For other models, take the first value in the prediction array
           prediction = response.data.prediction[0][0];
         }
 
@@ -121,10 +122,10 @@
           var newGraphData = response.data;
           var plotDiv = document.getElementById("plot");
 
-          // Purge the plot container to completely clear it
+          // Purge the plot 
           Plotly.purge(plotDiv);
 
-          // Use Plotly.react to efficiently update the plot
+          // Update the plot
           Plotly.react("plot", newGraphData.data, newGraphData.layout);
         })
         .catch(function (error) {
@@ -134,11 +135,3 @@
 </script>
 
 {% endblock %}
-
-<!-- legacy code for review
-{% for i in range(1, 10) %}
-<div class="mb-3">
-    <label for="inputFeature{{i}}" class="form-label">Feature {{i}}</label>
-    <input type="number" class="form-control" id="inputFeature{{i}}" name="feature{{i}}" required>
-</div>
-{% endfor %} -->

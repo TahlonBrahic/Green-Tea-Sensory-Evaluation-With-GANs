@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import onnxruntime as ort
 import plotly.graph_objs as go
+import json
 
 # Initialization of global variables to None. These will be set by `load_tea_catechin_models`.
 Model_RF_session, Model_MLP_session, Model_RNN_session = None, None, None
@@ -13,14 +14,6 @@ y_pred_rf, y_pred_mlp, y_pred_rnn = None, None, None
 sensory_data_max, sensory_data_min = None, None
 
 def load_tea_catechin_models():
-    """
-    Loads the ONNX models for Random Forest, MLP, RNN, and scalers for chemical and sensory data.
-    Additionally, loads test datasets and their unscaled versions for evaluation purposes.
-    Sets global variables for each model and dataset for use throughout the application.
-    
-    Raises:
-        Exception: If there is an issue loading the models or datasets, an error message is printed.
-    """
     global Model_RF_session, Model_MLP_session, Model_RNN_session
     global Chemical_Scaler_session, Sensory_Scaler_session
     global test_X, unscaled_test_X
@@ -49,54 +42,34 @@ def load_tea_catechin_models():
         y_pred_mlp = np.load(os.path.join(base_dir, 'y_pred_mlp.npy'))
         y_pred_rnn = np.load(os.path.join(base_dir, 'y_pred_rnn.npy'))
 
-        # Load inverse scaling max and min
-        with open('sensory_scaler_params.json', 'r') as f:
+        # Load inverse scaling max and min from JSON file
+        with open(os.path.join(base_dir, 'scaling_params.json'), 'r') as f:
             sensory_scaler_params = json.load(f)
 
         sensory_data_min = np.array(sensory_scaler_params['min'])
         sensory_data_max = np.array(sensory_scaler_params['max'])
 
     except Exception as e:
-        print(f"Error loading models or data: {e}")
+        print("Error loading models or datasets:", e)
+
+# Call the function to load the models and data
+load_tea_catechin_models()
+
 
 # Prediction
 def predict(model, features):   
 
     load_tea_catechin_models()
 
-    print("Starting prediction...")
     features_array = np.array(features, dtype=np.float32).reshape(1, -1)
-    print(f"Features array reshaped to: {features_array.shape}")
-
-    # Debugging: Print the input features before scaling
-    print(f"Input features before scaling: {features_array}")
 
     model_session = {'Random Forest': Model_RF_session, 
                      'Multilayer Perceptron': Model_MLP_session, 
                      'Recurrent Neural Network': Model_RNN_session}.get(model, None)
     
-    if model_session is None:
-        print("Error: Model not found")
-        return None
-    else:
-        print(f"Model selected for prediction: {model}")
-    
     # Scale the input
-    try:
-        print("Scaling input features...")
-        scaled_features = scale(features_array, Chemical_Scaler_session)
-        if scaled_features is None:
-            print("Error: Could not scale features")
-            return None
-        else:
-            print(f"Scaled features shape: {scaled_features.shape}")
-            # Debugging: Print the scaled features
-            print(f"Scaled features: {scaled_features}")
+    scaled_features = scale(features_array, Chemical_Scaler_session)
         
-    except Exception as e:
-        print(f"Error scaling features for {model}: {e}")
-        return None
-
     try:
         input_name = model_session.get_inputs()[0].name
         output_name = model_session.get_outputs()[0].name
@@ -104,29 +77,28 @@ def predict(model, features):
         
         # Correctly using scaled_features for prediction
         if model == 'Recurrent Neural Network':
-            print("Preparing RNN input...")
             rnn_input = prepare_rnn_input(scaled_features)
-            print(f"RNN input prepared with shape: {rnn_input.shape}")
-            prediction = model_session.run([output_name], {input_name: rnn_input})[0]
+            predictions = model_session.run([output_name], {input_name: rnn_input})[0]
         else:
-            prediction = model_session.run([output_name], {input_name: scaled_features})[0]
+            predictions = model_session.run([output_name], {input_name: scaled_features})[0]
 
-        # Debugging: Print the raw prediction
-        print(f"Raw prediction: {prediction}")
+        if isinstance(predictions, list):
+            # Aggregate predictions into a single value (e.g., mean)
+            prediction = np.mean(predictions)
+        else:
+            prediction = predictions
 
-        print(f"Raw prediction shape: {prediction.shape}")
-        if prediction.ndim == 1:
-            prediction = prediction.reshape(-1, 1)
-            print(f"Prediction reshaped to: {prediction.shape}")
-    
+        # Ensure prediction is a single value
+        if isinstance(prediction, np.ndarray) and prediction.ndim > 1:
+            # Take the mean if prediction is multidimensional
+            prediction = np.mean(prediction)
+
         # Inverse scale the prediction
-        print("Inverse scaling prediction...")
         prediction = np.array(prediction, dtype=np.float32)
         prediction = inverse_scale(prediction)
 
-        # Debugging: Print the final prediction after inverse scaling
-        print(f"Final Prediction: {prediction}")  
         return prediction
+    
     except Exception as e:
         print(f"Error making prediction for {model}: {e}")
         return None
@@ -145,8 +117,6 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
         y_pred = y_pred_mlp
     elif model_name == 'Recurrent Neural Network':
         y_pred = y_pred_rnn
-    else:
-        raise ValueError("Invalid model name")
   
     # Extracting features for the plot using the provided feature names
     feature_1_values = unscaled_test_X[feature_1_name].values
@@ -203,16 +173,20 @@ def inverse_scale(prediction):
     global sensory_data_max, sensory_data_min
 
     try:
+        if sensory_data_min is None or sensory_data_max is None:
+            raise ValueError("Scaling parameters are not initialized")
+
         # Ensure prediction is in the expected shape and data type
         prediction_array = np.array(prediction, dtype=np.float32).reshape(1, -1)
-        
+
         # Perform inverse min-max scaling
         original_scale_prediction = prediction_array * (sensory_data_max - sensory_data_min) + sensory_data_min
-        
+
         return original_scale_prediction
     except Exception as e:
         print(f"Error inverse scaling predictions: {e}")
         return None
+
 
 def prepare_rnn_input(features, target_sequence_length=2000, num_features=9):
     if features.ndim == 1:
@@ -221,30 +195,3 @@ def prepare_rnn_input(features, target_sequence_length=2000, num_features=9):
     sequence_length = min(features.shape[0], target_sequence_length)
     padded_input[:sequence_length, :] = features[:sequence_length, :]
     return padded_input.reshape(1, target_sequence_length, num_features)
-
-def run_test(model_to_test='Random Forest'):
-    load_tea_catechin_models()  # Load models and scalers once
-
-    # Known input features (example: normalized features of a specific tea sample)
-    test_features = [0.25, 0.22, 0.06, 0.05, 0.17, 0.17, 0.05, 0.04, 0.11]
-    expected_output = 0.86  # Expected output inverse scaled
-   
-    print(f"Running test prediction with model: {model_to_test}")
-    prediction = predict(model_to_test, test_features)
-    print(f"Test Prediction: {prediction}")
-    print(f"Expected Output: {expected_output}")
-
-    # Evaluate the prediction
-    if prediction is not None:
-        prediction_value = prediction[0, 0]  # Extract the scalar prediction value
-        print(f"Extracted Prediction Value: {prediction_value}")
-        # Implement your evaluation logic here, for example:
-        if abs(prediction_value - expected_output) < 0.1:
-            print("Test passed: Prediction is close to expected output.")
-        else:
-            print("Test failed: Prediction is far from expected output.")
-    else:
-        print("Test failed: Prediction could not be made.")
-
-if __name__ == "__main__":
-    run_test()

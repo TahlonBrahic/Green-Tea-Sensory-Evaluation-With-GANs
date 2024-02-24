@@ -1,5 +1,3 @@
-# fix scaling issue after model creation and training
-
 # double check and make sure model is trained well and giving good outputs everytime
 
 # add / edit comments on all 
