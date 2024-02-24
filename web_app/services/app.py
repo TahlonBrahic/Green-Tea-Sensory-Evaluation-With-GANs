@@ -34,6 +34,7 @@ def projects():
 
 @app.route('/projects/tea-catechins', methods=['GET', 'POST']) 
 def tea_catechins():
+
     model_names = ['Random Forest', 'Multilayer Perceptron', 'Recurrent Neural Network']
     model_choice = 'Random Forest'  # Default model choice
     

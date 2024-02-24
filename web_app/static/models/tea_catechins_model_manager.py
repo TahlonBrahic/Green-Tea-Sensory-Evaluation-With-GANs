@@ -1,5 +1,5 @@
-import os  # Standard library imports
-import numpy as np  # Third-party imports
+import os  
+import numpy as np  
 import pandas as pd
 import onnxruntime as ort
 import plotly.graph_objs as go
@@ -10,6 +10,7 @@ Chemical_Scaler_session, Sensory_Scaler_session = None, None
 test_X, unscaled_test_X = None, None
 test_y, unscaled_test_y = None, None
 y_pred_rf, y_pred_mlp, y_pred_rnn = None, None, None
+sensory_data_max, sensory_data_min = None, None
 
 def load_tea_catechin_models():
     """
@@ -25,6 +26,7 @@ def load_tea_catechin_models():
     global test_X, unscaled_test_X
     global test_y, unscaled_test_y
     global y_pred_rf, y_pred_mlp, y_pred_rnn
+    global sensory_data_max, sensory_data_min
 
     base_dir = os.path.join(os.path.dirname(__file__), '../../../source/')
 
@@ -47,13 +49,28 @@ def load_tea_catechin_models():
         y_pred_mlp = np.load(os.path.join(base_dir, 'y_pred_mlp.npy'))
         y_pred_rnn = np.load(os.path.join(base_dir, 'y_pred_rnn.npy'))
 
+        # Load inverse scaling max and min
+        with open('sensory_scaler_params.json', 'r') as f:
+            sensory_scaler_params = json.load(f)
+
+        sensory_data_min = np.array(sensory_scaler_params['min'])
+        sensory_data_max = np.array(sensory_scaler_params['max'])
+
     except Exception as e:
         print(f"Error loading models or data: {e}")
 
 # Prediction
-def predict(model, features):    
+def predict(model, features):   
 
+    load_tea_catechin_models()
+
+    print("Starting prediction...")
     features_array = np.array(features, dtype=np.float32).reshape(1, -1)
+    print(f"Features array reshaped to: {features_array.shape}")
+
+    # Debugging: Print the input features before scaling
+    print(f"Input features before scaling: {features_array}")
+
     model_session = {'Random Forest': Model_RF_session, 
                      'Multilayer Perceptron': Model_MLP_session, 
                      'Recurrent Neural Network': Model_RNN_session}.get(model, None)
@@ -61,13 +78,20 @@ def predict(model, features):
     if model_session is None:
         print("Error: Model not found")
         return None
+    else:
+        print(f"Model selected for prediction: {model}")
     
     # Scale the input
     try:
+        print("Scaling input features...")
         scaled_features = scale(features_array, Chemical_Scaler_session)
         if scaled_features is None:
             print("Error: Could not scale features")
             return None
+        else:
+            print(f"Scaled features shape: {scaled_features.shape}")
+            # Debugging: Print the scaled features
+            print(f"Scaled features: {scaled_features}")
         
     except Exception as e:
         print(f"Error scaling features for {model}: {e}")
@@ -76,32 +100,39 @@ def predict(model, features):
     try:
         input_name = model_session.get_inputs()[0].name
         output_name = model_session.get_outputs()[0].name
+        print(f"Model input name: {input_name}, output name: {output_name}")
         
         # Correctly using scaled_features for prediction
         if model == 'Recurrent Neural Network':
-            # Make sure to use scaled_features for RNN input preparation
+            print("Preparing RNN input...")
             rnn_input = prepare_rnn_input(scaled_features)
+            print(f"RNN input prepared with shape: {rnn_input.shape}")
             prediction = model_session.run([output_name], {input_name: rnn_input})[0]
         else:
             prediction = model_session.run([output_name], {input_name: scaled_features})[0]
 
+        # Debugging: Print the raw prediction
+        print(f"Raw prediction: {prediction}")
+
+        print(f"Raw prediction shape: {prediction.shape}")
         if prediction.ndim == 1:
             prediction = prediction.reshape(-1, 1)
+            print(f"Prediction reshaped to: {prediction.shape}")
     
         # Inverse scale the prediction
+        print("Inverse scaling prediction...")
         prediction = np.array(prediction, dtype=np.float32)
-        prediction = inverse_scale(prediction, Sensory_Scaler_session)
-        
-        print(f"Prediction: {prediction}")  
+        prediction = inverse_scale(prediction)
+
+        # Debugging: Print the final prediction after inverse scaling
+        print(f"Final Prediction: {prediction}")  
         return prediction
     except Exception as e:
         print(f"Error making prediction for {model}: {e}")
         return None
 
-# Interactive Plot
-import numpy as np
-import plotly.graph_objs as go
 
+# Interactive Plot
 def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffeine', model_name='Random Forest'):
     global unscaled_test_X, y_pred_rf, y_pred_mlp, y_pred_rnn
 
@@ -124,16 +155,8 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
     # Flatten y_pred to ensure it's one-dimensional
     y_pred = y_pred.flatten()
 
-    # Debugging: Check shapes of the arrays after flattening y_pred
-    print(f"Shapes - feature_1: {feature_1_values.shape}, feature_2: {feature_2_values.shape}, y_pred: {y_pred.shape}")
-    if not (len(feature_1_values) == len(feature_2_values) == len(y_pred)):
-        raise ValueError("Data length mismatch after flattening!")
-
     # Cleaning NaN or infinite values in y_pred
     y_pred = np.nan_to_num(y_pred, nan=0.0, posinf=0.0, neginf=0.0)
-
-    # Debugging: Print sample values to ensure data is as expected
-    print(f"Sample y_pred values: {y_pred[:5]}")
 
     # Create a 3D scatter plot
     fig = go.Figure(data=[go.Scatter3d(
@@ -164,27 +187,29 @@ def create_tea_catechins_plot(feature_1_name='Catechin', feature_2_name='Caffein
 
     return fig
 
-
 # Utility Functions
 def scale(features, scaler_session):
     try:
         input_name = scaler_session.get_inputs()[0].name
         output_name = scaler_session.get_outputs()[0].name
         features_array = np.array(features).astype(np.float32).reshape(-1, 9)
-        print(f"Min feature value: {np.min(features_array)}, Max feature value: {np.max(features_array)}")
         scaled_features = scaler_session.run([output_name], {input_name: features_array})[0]
-        print(f"Min scaled feature value: {np.min(scaled_features)}, Max scaled feature value: {np.max(scaled_features)}")
         return scaled_features
     except Exception as e:
         print(f"Error scaling features: {e}")
         return None
 
-def inverse_scale(predictions, scaler_session):
+def inverse_scale(prediction):
+    global sensory_data_max, sensory_data_min
+
     try:
-        input_name = scaler_session.get_inputs()[0].name
-        output_name = scaler_session.get_outputs()[0].name
-        original_scale_predictions = scaler_session.run([output_name], {input_name: predictions.astype(np.float32)})[0]
-        return original_scale_predictions
+        # Ensure prediction is in the expected shape and data type
+        prediction_array = np.array(prediction, dtype=np.float32).reshape(1, -1)
+        
+        # Perform inverse min-max scaling
+        original_scale_prediction = prediction_array * (sensory_data_max - sensory_data_min) + sensory_data_min
+        
+        return original_scale_prediction
     except Exception as e:
         print(f"Error inverse scaling predictions: {e}")
         return None
@@ -197,7 +222,29 @@ def prepare_rnn_input(features, target_sequence_length=2000, num_features=9):
     padded_input[:sequence_length, :] = features[:sequence_length, :]
     return padded_input.reshape(1, target_sequence_length, num_features)
 
-# Example inputs
-# .25, .22, .06, .05, .17, .17, .05, .04, .11
-# Example output
-# .86
+def run_test(model_to_test='Random Forest'):
+    load_tea_catechin_models()  # Load models and scalers once
+
+    # Known input features (example: normalized features of a specific tea sample)
+    test_features = [0.25, 0.22, 0.06, 0.05, 0.17, 0.17, 0.05, 0.04, 0.11]
+    expected_output = 0.86  # Expected output inverse scaled
+   
+    print(f"Running test prediction with model: {model_to_test}")
+    prediction = predict(model_to_test, test_features)
+    print(f"Test Prediction: {prediction}")
+    print(f"Expected Output: {expected_output}")
+
+    # Evaluate the prediction
+    if prediction is not None:
+        prediction_value = prediction[0, 0]  # Extract the scalar prediction value
+        print(f"Extracted Prediction Value: {prediction_value}")
+        # Implement your evaluation logic here, for example:
+        if abs(prediction_value - expected_output) < 0.1:
+            print("Test passed: Prediction is close to expected output.")
+        else:
+            print("Test failed: Prediction is far from expected output.")
+    else:
+        print("Test failed: Prediction could not be made.")
+
+if __name__ == "__main__":
+    run_test()

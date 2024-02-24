@@ -16,6 +16,13 @@
     </h1>
     <div class="container mt-5">
       <h2>Interact with the Machine Learning Model</h2>
+      <div class="bg-gray-800 text-white p-4 rounded-lg shadow my-3">
+        <p>
+          Please input all data in milligrams (mg) as numerical values only. The
+          model will output an aggregated sensory evaluation score as a
+          prediction.
+        </p>
+      </div>
       <div class="mb-3">
         <label for="modelChoice" class="form-label">Select Model</label>
         <select class="form-control" id="modelChoice" name="model_choice">
@@ -46,7 +53,6 @@
           />
         </div>
         {% endfor %}
-
         <button type="submit" class="btn btn-primary">Predict</button>
       </form>
       <div id="predictionResult" class="mt-3"></div>
@@ -100,29 +106,31 @@
     });
 
   // Update Graph
-  document.getElementById("modelChoice").addEventListener("change", function() {
-  var modelChoice = this.value;
-  
-  axios.get('/get-new-graph-data', {
-    params: {
-      model_choice: modelChoice
-    }
-  })
-  .then(function(response) {
-    var newGraphData = response.data;
-    var plotDiv = document.getElementById('plot');
-    
-    // Purge the plot container to completely clear it
-    Plotly.purge(plotDiv);
-    
-    // Use Plotly.react to efficiently update the plot
-    Plotly.react('plot', newGraphData.data, newGraphData.layout);
-  })
-  .catch(function(error) {
-    console.log(error);
-  });
-});
+  document
+    .getElementById("modelChoice")
+    .addEventListener("change", function () {
+      var modelChoice = this.value;
 
+      axios
+        .get("/get-new-graph-data", {
+          params: {
+            model_choice: modelChoice,
+          },
+        })
+        .then(function (response) {
+          var newGraphData = response.data;
+          var plotDiv = document.getElementById("plot");
+
+          // Purge the plot container to completely clear it
+          Plotly.purge(plotDiv);
+
+          // Use Plotly.react to efficiently update the plot
+          Plotly.react("plot", newGraphData.data, newGraphData.layout);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    });
 </script>
 
 {% endblock %}
