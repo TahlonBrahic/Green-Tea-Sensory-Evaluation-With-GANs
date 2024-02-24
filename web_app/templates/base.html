@@ -148,14 +148,14 @@
         }
         typeWriterEffect(60);
 
-        const hiddenElements = document.querySelectorAll(".hidden");
+        const hiddenElements = document.querySelectorAll(".custom-hidden");
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
-                entry.target.classList.add("show");
+                entry.target.classList.add("custom-show");
               } else {
-                entry.target.classList.remove("show");
+                entry.target.classList.remove("custom-show");
               }
             });
           },
