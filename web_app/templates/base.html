@@ -42,7 +42,6 @@
             </div>
             <div class="sm:ml-6 sm:block">
               <div class="flex space-x-4">
-                <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                 <a
                   href="{{ url_for('home') }}"
                   class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
@@ -110,7 +109,7 @@
 
         let index = 0;
         const typewriterElement = document.getElementById("typewriter");
-        typewriterElement.textContent = ""; // Clear any pre-existing content
+        typewriterElement.textContent = ""; 
 
         if (!typewriterElement.querySelector(".cursor")) {
           const cursorSpan = document.createElement("span");

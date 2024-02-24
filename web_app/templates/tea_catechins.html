@@ -46,7 +46,7 @@
 
 <script>
     document.getElementById('modelInputForm').addEventListener('submit', async function(e) {
-        e.preventDefault(); // prevent default form submission
+        e.preventDefault(); // This prevents a default form submission (all blank)
         
         const formData = new FormData(e.target);
         let formProps = Object.fromEntries(formData);
@@ -66,7 +66,7 @@
             // Extract prediction based on the selected model
             let prediction;
             if (modelChoice === 'Recurrent Neural Network') {
-                // For RNN, take the first value in the prediction array
+                // For the RNN, take the first value in the prediction array
                 prediction = response.data.prediction[0];
             } else {
                 // For other models, take the first value in the prediction array
